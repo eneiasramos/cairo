@@ -34,14 +34,14 @@ PHP_MINIT_FUNCTION(cairo_error)
 	zend_class_entry ce, status_ce;
 
 	INIT_CLASS_ENTRY(ce, "CairoException", NULL);
-	cairo_ce_cairoexception = zend_register_internal_class_ex(&ce, zend_exception_get_default(TSRMLS_C), "Exception" TSRMLS_CC);
+	cairo_ce_cairoexception = zend_register_internal_class_ex(&ce, zend_exception_get_default(TSRMLS_C), "Exception" );
 
 	INIT_CLASS_ENTRY(status_ce, "CairoStatus", NULL);
-	cairo_ce_cairostatus = zend_register_internal_class(&status_ce TSRMLS_CC);
+	cairo_ce_cairostatus = zend_register_internal_class(&status_ce );
 	cairo_ce_cairostatus->ce_flags |= ZEND_ACC_EXPLICIT_ABSTRACT_CLASS | ZEND_ACC_FINAL_CLASS;
 
 	#define REGISTER_CAIRO_STATUS_LONG_CONST(const_name, value) \
-	zend_declare_class_constant_long(cairo_ce_cairostatus, const_name, sizeof(const_name)-1, (long)value TSRMLS_CC); \
+	zend_declare_class_constant_long(cairo_ce_cairostatus, const_name, sizeof(const_name)-1, (long)value ); \
 	REGISTER_LONG_CONSTANT(#value,  value,  CONST_CS | CONST_PERSISTENT);
 
 	REGISTER_CAIRO_STATUS_LONG_CONST("SUCCESS", CAIRO_STATUS_SUCCESS);
@@ -97,7 +97,7 @@ PHP_CAIRO_API void php_cairo_throw_exception(cairo_status_t status TSRMLS_DC)
 		return;
 	}
 	error_message = estrdup(cairo_status_to_string(status));
-	zend_throw_exception(cairo_ce_cairoexception, error_message, status TSRMLS_CC);
+	zend_throw_exception(cairo_ce_cairoexception, error_message, status );
 	efree(error_message);
 	return;
 }
@@ -110,7 +110,7 @@ PHP_CAIRO_API void php_cairo_trigger_error(cairo_status_t status TSRMLS_DC)
 		return;
 	}
 	error_message = estrdup(cairo_status_to_string(status));
-	php_error_docref(NULL TSRMLS_CC, E_WARNING, "%s", error_message);
+	php_error_docref(NULL , E_WARNING, "%s", error_message);
 	efree(error_message);
 	return;
 }

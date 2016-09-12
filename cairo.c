@@ -709,7 +709,7 @@ PHP_FUNCTION(cairo_version_string)
 		return;
 	}
 
-	RETURN_STRING(cairo_version_string(), 1);
+	RETURN_STRING(cairo_version_string();
 }
 /* }}} */
 
@@ -724,7 +724,7 @@ PHP_METHOD(Cairo, versionString)
 	}
 	PHP_CAIRO_RESTORE_ERRORS(TRUE)
 
-	RETURN_STRING(cairo_version_string(), 1);
+	RETURN_STRING(cairo_version_string());
 }
 /* }}} */
 
@@ -859,11 +859,11 @@ PHP_FUNCTION(cairo_status_to_string)
 {
 	long status;
 
-	if (zend_parse_parameters(ZEND_NUM_ARGS() TSRMLS_CC, "l", &status) == FAILURE) {
+	if (zend_parse_parameters(ZEND_NUM_ARGS() , "l", &status) == FAILURE) {
 		return;
 	}
 
-	RETURN_STRING(cairo_status_to_string(status), 1);
+	RETURN_STRING(cairo_status_to_string(status));
 }
 /* }}} cairo_status_to_string */
 
@@ -875,13 +875,13 @@ PHP_METHOD(Cairo, statusToString)
 	long status;
 
 	PHP_CAIRO_ERROR_HANDLING(TRUE)
-	if (zend_parse_parameters(ZEND_NUM_ARGS() TSRMLS_CC, "l", &status) == FAILURE) {
+	if (zend_parse_parameters(ZEND_NUM_ARGS(), "l", &status) == FAILURE) {
 		PHP_CAIRO_RESTORE_ERRORS(TRUE)
 		return;
 	}
 	PHP_CAIRO_RESTORE_ERRORS(TRUE)
 
-	RETURN_STRING(cairo_status_to_string(status), 1);
+	RETURN_STRING(cairo_status_to_string(status));
 }
 /* }}} */
 
@@ -1269,7 +1269,7 @@ PHP_MINIT_FUNCTION(cairo)
 	zend_class_entry ce;
 
 	INIT_CLASS_ENTRY(ce, "Cairo", cairo_methods);
-	cairo_ce_cairo = zend_register_internal_class(&ce TSRMLS_CC);
+	cairo_ce_cairo = zend_register_internal_class(&ce );
 	cairo_ce_cairo->ce_flags |= ZEND_ACC_EXPLICIT_ABSTRACT_CLASS | ZEND_ACC_FINAL_CLASS;
 
 	memcpy(&cairo_std_object_handlers, zend_get_std_object_handlers(), sizeof(zend_object_handlers));

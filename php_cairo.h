@@ -46,7 +46,7 @@ extern zend_module_entry cairo_module_entry;
 /* 5.2 is stupid and needs some additional stuff */
 #ifndef zend_parse_parameters_none
 #define zend_parse_parameters_none()										\
-	zend_parse_parameters(ZEND_NUM_ARGS() TSRMLS_CC, "")
+	zend_parse_parameters(ZEND_NUM_ARGS() , "")
 #endif
 
 /* refcount macros */
@@ -567,19 +567,19 @@ PHP_CAIRO_API extern cairo_t * php_cairo_context_reference(cairo_t *context);
 #define PHP_CAIRO_ERROR_HANDLING(force_exceptions) \
 	zend_error_handling error_handling; \
 	if(force_exceptions || getThis()) { \
-		zend_replace_error_handling(EH_THROW, cairo_ce_cairoexception, &error_handling TSRMLS_CC); \
+		zend_replace_error_handling(EH_THROW, cairo_ce_cairoexception, &error_handling ); \
 	}
 
 #define PHP_CAIRO_RESTORE_ERRORS(force_exceptions) \
 	if(force_exceptions || getThis()) { \
-		zend_restore_error_handling(&error_handling TSRMLS_CC); \
+		zend_restore_error_handling(&error_handling ); \
 	}
 
 #else
 /* 5.2 versions of the macros */
 #define PHP_CAIRO_ERROR_HANDLING(force_exceptions) \
 	if(force_exceptions || getThis()) { \
-		php_set_error_handling(EH_THROW, cairo_ce_cairoexception TSRMLS_CC); \
+		php_set_error_handling(EH_THROW, cairo_ce_cairoexception ); \
 	}
 
 #define PHP_CAIRO_RESTORE_ERRORS(force_exceptions) \
@@ -592,15 +592,15 @@ PHP_CAIRO_API extern cairo_t * php_cairo_context_reference(cairo_t *context);
 /* do error or exception based on "are we in method or in function" */
 #define PHP_CAIRO_ERROR(status) \
 	if(!getThis()) { \
-		php_cairo_trigger_error(status TSRMLS_CC); \
+		php_cairo_trigger_error(status ); \
 	} else { \
-		php_cairo_throw_exception(status TSRMLS_CC); \
+		php_cairo_throw_exception(status ); \
 	}
 
 /* a bunch of inline functions to deal with checking for the proper internal object, makes extending classes work */
 static inline cairo_context_object* cairo_context_object_get(zval *zobj TSRMLS_DC)
 {
-    cairo_context_object *pobj = zend_object_store_get_object(zobj TSRMLS_CC);
+    cairo_context_object *pobj = zend_object_store_get_object(zobj );
     if (pobj->context == NULL) {
 		php_error(E_ERROR, "Internal context object missing in %s wrapper, you must call parent::__construct in extended classes", Z_OBJCE_P(zobj)->name);
     }
@@ -609,7 +609,7 @@ static inline cairo_context_object* cairo_context_object_get(zval *zobj TSRMLS_D
 
 static inline cairo_path_object* cairo_path_object_get(zval *zobj TSRMLS_DC)
 {
-    cairo_path_object *pobj = zend_object_store_get_object(zobj TSRMLS_CC);
+    cairo_path_object *pobj = zend_object_store_get_object(zobj );
     if (pobj->path == NULL) {
 		php_error(E_ERROR, "Internal path object missing in %s wrapper, you must call parent::__construct in extended classes", Z_OBJCE_P(zobj)->name);
     }
@@ -618,7 +618,7 @@ static inline cairo_path_object* cairo_path_object_get(zval *zobj TSRMLS_DC)
 
 static inline cairo_pattern_object* cairo_pattern_object_get(zval *zobj TSRMLS_DC)
 {
-    cairo_pattern_object *pobj = zend_object_store_get_object(zobj TSRMLS_CC);
+    cairo_pattern_object *pobj = zend_object_store_get_object(zobj );
     if (pobj->pattern == NULL) {
         php_error(E_ERROR, "Internal pattern object missing in %s wrapper, you must call parent::__construct in extended classes", Z_OBJCE_P(zobj)->name);
     }
@@ -627,7 +627,7 @@ static inline cairo_pattern_object* cairo_pattern_object_get(zval *zobj TSRMLS_D
 
 static inline cairo_matrix_object* cairo_matrix_object_get(zval *zobj TSRMLS_DC)
 {
-    cairo_matrix_object *mobj = zend_object_store_get_object(zobj TSRMLS_CC);
+    cairo_matrix_object *mobj = zend_object_store_get_object(zobj );
     if (mobj->matrix == NULL) {
         php_error(E_ERROR, "Internal matrix object missing in %s wrapper, you must call parent::__construct in extended classes", Z_OBJCE_P(zobj)->name);
     }
@@ -636,7 +636,7 @@ static inline cairo_matrix_object* cairo_matrix_object_get(zval *zobj TSRMLS_DC)
 
 static inline cairo_surface_object* cairo_surface_object_get(zval *zobj TSRMLS_DC)
 {
-    cairo_surface_object *pobj = zend_object_store_get_object(zobj TSRMLS_CC);
+    cairo_surface_object *pobj = zend_object_store_get_object(zobj );
     if (pobj->surface == NULL) {
         php_error(E_ERROR, "Internal surface object missing in %s wrapper, you must call parent::__construct in extended classes", Z_OBJCE_P(zobj)->name);
     }
@@ -645,7 +645,7 @@ static inline cairo_surface_object* cairo_surface_object_get(zval *zobj TSRMLS_D
 
 static inline cairo_font_face_object* cairo_font_face_object_get(zval *zobj TSRMLS_DC)
 {
-    cairo_font_face_object *pobj = zend_object_store_get_object(zobj TSRMLS_CC);
+    cairo_font_face_object *pobj = zend_object_store_get_object(zobj );
     if (pobj->font_face == NULL) {
         php_error(E_ERROR, "Internal font face object missing in %s wrapper, you must call parent::__construct in extended classes", Z_OBJCE_P(zobj)->name);
     }
@@ -654,7 +654,7 @@ static inline cairo_font_face_object* cairo_font_face_object_get(zval *zobj TSRM
 
 static inline cairo_scaled_font_object* cairo_scaled_font_object_get(zval *zobj TSRMLS_DC)
 {
-    cairo_scaled_font_object *pobj = zend_object_store_get_object(zobj TSRMLS_CC);
+    cairo_scaled_font_object *pobj = zend_object_store_get_object(zobj );
     if (pobj->scaled_font == NULL) {
         php_error(E_ERROR, "Internal scaled font object missing in %s wrapper, you must call parent::__construct in extended classes", Z_OBJCE_P(zobj)->name);
     }
@@ -663,7 +663,7 @@ static inline cairo_scaled_font_object* cairo_scaled_font_object_get(zval *zobj 
 
 static inline cairo_font_options_object* cairo_font_options_object_get(zval *zobj TSRMLS_DC)
 {
-    cairo_font_options_object *pobj = zend_object_store_get_object(zobj TSRMLS_CC);
+    cairo_font_options_object *pobj = zend_object_store_get_object(zobj );
     if (pobj->font_options == NULL) {
         php_error(E_ERROR, "Internal font options object missing in %s wrapper, you must call parent::__construct in extended classes", Z_OBJCE_P(zobj)->name);
     }

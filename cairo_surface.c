@@ -68,7 +68,7 @@ ZEND_END_ARG_INFO()
    CairoSurface CANNOT be extended in userspace, this will throw an exception on use */
 PHP_METHOD(CairoSurface, __construct)
 {
-	zend_throw_exception(cairo_ce_cairoexception, "CairoSurface cannot be constructed", 0 TSRMLS_CC);
+	zend_throw_exception(cairo_ce_cairoexception, "CairoSurface cannot be constructed", 0 );
 }
 /* }}} */
 
@@ -84,18 +84,18 @@ PHP_FUNCTION(cairo_surface_create_similar)
 	double width, height;
 
 	PHP_CAIRO_ERROR_HANDLING(FALSE)
-	if (zend_parse_method_parameters(ZEND_NUM_ARGS() TSRMLS_CC, getThis(), "Oldd", &surface_zval, cairo_ce_cairosurface, &content, &width, &height) == FAILURE) {
+	if (zend_parse_method_parameters(ZEND_NUM_ARGS() , getThis(), "Oldd", &surface_zval, cairo_ce_cairosurface, &content, &width, &height) == FAILURE) {
 		PHP_CAIRO_RESTORE_ERRORS(FALSE)
 		return;
 	}
 	PHP_CAIRO_RESTORE_ERRORS(FALSE)
 
-	surface_object = (cairo_surface_object *)cairo_surface_object_get(surface_zval TSRMLS_CC);
+	surface_object = (cairo_surface_object *)cairo_surface_object_get(surface_zval );
 	new_surface = cairo_surface_create_similar(surface_object->surface, content, width, height);
 
 	/* we can't always rely on the same type of surface being returned, so we use php_cairo_get_surface_ce */
-	object_init_ex(return_value, php_cairo_get_surface_ce(new_surface TSRMLS_CC));
-	new_surface_object = (cairo_surface_object *)zend_object_store_get_object(return_value TSRMLS_CC);
+	object_init_ex(return_value, php_cairo_get_surface_ce(new_surface ));
+	new_surface_object = (cairo_surface_object *)zend_object_store_get_object(return_value );
 	new_surface_object->surface = new_surface;
 }
 /* }}} */
@@ -113,19 +113,19 @@ PHP_FUNCTION(cairo_surface_create_for_rectangle)
 	double x, y, width, height;
 
 	PHP_CAIRO_ERROR_HANDLING(FALSE)
-	if (zend_parse_method_parameters(ZEND_NUM_ARGS() TSRMLS_CC, getThis(), "Odddd", &surface_zval, cairo_ce_cairosurface, &x, &y, &width, &height) == FAILURE) {
+	if (zend_parse_method_parameters(ZEND_NUM_ARGS() , getThis(), "Odddd", &surface_zval, cairo_ce_cairosurface, &x, &y, &width, &height) == FAILURE) {
 		PHP_CAIRO_RESTORE_ERRORS(FALSE)
 		return;
 	}
 	PHP_CAIRO_RESTORE_ERRORS(FALSE)
 
-	surface_object = (cairo_surface_object *)cairo_surface_object_get(surface_zval TSRMLS_CC);
+	surface_object = (cairo_surface_object *)cairo_surface_object_get(surface_zval );
 	new_surface = cairo_surface_create_for_rectangle(surface_object->surface, x, y, width, height);
 
 	Z_ADDREF_P(surface_zval);
 
 	object_init_ex(return_value, cairo_ce_cairosubsurface);
-	new_surface_object = (cairo_surface_object *)zend_object_store_get_object(return_value TSRMLS_CC);
+	new_surface_object = (cairo_surface_object *)zend_object_store_get_object(return_value );
 	new_surface_object->parent_zval = surface_zval;
 	new_surface_object->surface = new_surface;
 }
@@ -142,13 +142,13 @@ PHP_FUNCTION(cairo_surface_status)
 	cairo_surface_object *surface_object;
 
 	PHP_CAIRO_ERROR_HANDLING(FALSE)
-	if (zend_parse_method_parameters(ZEND_NUM_ARGS() TSRMLS_CC, getThis(), "O", &surface_zval, cairo_ce_cairosurface) == FAILURE) {
+	if (zend_parse_method_parameters(ZEND_NUM_ARGS() , getThis(), "O", &surface_zval, cairo_ce_cairosurface) == FAILURE) {
 		PHP_CAIRO_RESTORE_ERRORS(FALSE)
 		return;
 	}
 	PHP_CAIRO_RESTORE_ERRORS(FALSE)
 
-	surface_object = (cairo_surface_object *)cairo_surface_object_get(surface_zval TSRMLS_CC);
+	surface_object = (cairo_surface_object *)cairo_surface_object_get(surface_zval );
 	RETURN_LONG(cairo_surface_status(surface_object->surface));
 }
 /* }}} */
@@ -163,13 +163,13 @@ PHP_FUNCTION(cairo_surface_finish)
 	cairo_surface_object *surface_object;
 
 	PHP_CAIRO_ERROR_HANDLING(FALSE)
-	if (zend_parse_method_parameters(ZEND_NUM_ARGS() TSRMLS_CC, getThis(), "O", &surface_zval, cairo_ce_cairosurface) == FAILURE) {
+	if (zend_parse_method_parameters(ZEND_NUM_ARGS() , getThis(), "O", &surface_zval, cairo_ce_cairosurface) == FAILURE) {
 		PHP_CAIRO_RESTORE_ERRORS(FALSE)
 		return;
 	}
 	PHP_CAIRO_RESTORE_ERRORS(FALSE)
 
-	surface_object = (cairo_surface_object *)cairo_surface_object_get(surface_zval TSRMLS_CC);
+	surface_object = (cairo_surface_object *)cairo_surface_object_get(surface_zval );
 	cairo_surface_finish(surface_object->surface);
 }
 /* }}} */
@@ -185,13 +185,13 @@ PHP_FUNCTION(cairo_surface_flush)
 	cairo_surface_object *surface_object;
 
 	PHP_CAIRO_ERROR_HANDLING(FALSE)
-	if (zend_parse_method_parameters(ZEND_NUM_ARGS() TSRMLS_CC, getThis(), "O", &surface_zval, cairo_ce_cairosurface) == FAILURE) {
+	if (zend_parse_method_parameters(ZEND_NUM_ARGS() , getThis(), "O", &surface_zval, cairo_ce_cairosurface) == FAILURE) {
 		PHP_CAIRO_RESTORE_ERRORS(FALSE)
 		return;
 	}
 	PHP_CAIRO_RESTORE_ERRORS(FALSE)
 
-	surface_object = (cairo_surface_object *)cairo_surface_object_get(surface_zval TSRMLS_CC);
+	surface_object = (cairo_surface_object *)cairo_surface_object_get(surface_zval );
 	cairo_surface_flush(surface_object->surface);
 }
 /* }}} */
@@ -207,16 +207,16 @@ PHP_FUNCTION(cairo_surface_get_font_options)
 	cairo_font_options_t *options = cairo_font_options_create();
 
 	PHP_CAIRO_ERROR_HANDLING(FALSE)
-	if (zend_parse_method_parameters(ZEND_NUM_ARGS() TSRMLS_CC, getThis(), "O", &surface_zval, cairo_ce_cairosurface) == FAILURE) {
+	if (zend_parse_method_parameters(ZEND_NUM_ARGS() , getThis(), "O", &surface_zval, cairo_ce_cairosurface) == FAILURE) {
 		PHP_CAIRO_RESTORE_ERRORS(FALSE)
 		return;
 	}
 	PHP_CAIRO_RESTORE_ERRORS(FALSE)
 
 	object_init_ex(return_value, cairo_ce_cairofontoptions);
-	font_object = (cairo_font_options_object *)zend_object_store_get_object(return_value TSRMLS_CC);
+	font_object = (cairo_font_options_object *)zend_object_store_get_object(return_value );
 
-	surface_object = (cairo_surface_object *)cairo_surface_object_get(surface_zval TSRMLS_CC);
+	surface_object = (cairo_surface_object *)cairo_surface_object_get(surface_zval );
 	cairo_surface_get_font_options(surface_object->surface, options);
 	font_object->font_options = options;
 }
@@ -231,13 +231,13 @@ PHP_FUNCTION(cairo_surface_get_content)
 	cairo_surface_object *surface_object;
 
 	PHP_CAIRO_ERROR_HANDLING(FALSE)
-	if (zend_parse_method_parameters(ZEND_NUM_ARGS() TSRMLS_CC, getThis(), "O", &surface_zval, cairo_ce_cairosurface) == FAILURE) {
+	if (zend_parse_method_parameters(ZEND_NUM_ARGS() , getThis(), "O", &surface_zval, cairo_ce_cairosurface) == FAILURE) {
 		PHP_CAIRO_RESTORE_ERRORS(FALSE)
 		return;
 	}
 	PHP_CAIRO_RESTORE_ERRORS(FALSE)
 
-	surface_object = (cairo_surface_object *)cairo_surface_object_get(surface_zval TSRMLS_CC);
+	surface_object = (cairo_surface_object *)cairo_surface_object_get(surface_zval );
 	RETURN_LONG(cairo_surface_get_content(surface_object->surface));
 }
 /* }}} */
@@ -251,13 +251,13 @@ PHP_FUNCTION(cairo_surface_mark_dirty)
 	cairo_surface_object *surface_object;
 
 	PHP_CAIRO_ERROR_HANDLING(FALSE)
-	if (zend_parse_method_parameters(ZEND_NUM_ARGS() TSRMLS_CC, getThis(), "O", &surface_zval, cairo_ce_cairosurface) == FAILURE) {
+	if (zend_parse_method_parameters(ZEND_NUM_ARGS() , getThis(), "O", &surface_zval, cairo_ce_cairosurface) == FAILURE) {
 		PHP_CAIRO_RESTORE_ERRORS(FALSE)
 		return;
 	}
 	PHP_CAIRO_RESTORE_ERRORS(FALSE)
 
-	surface_object = (cairo_surface_object *)cairo_surface_object_get(surface_zval TSRMLS_CC);
+	surface_object = (cairo_surface_object *)cairo_surface_object_get(surface_zval );
 	cairo_surface_mark_dirty(surface_object->surface);
 }
 /* }}} */
@@ -273,13 +273,13 @@ PHP_FUNCTION(cairo_surface_mark_dirty_rectangle)
 	double x = 0.0, y = 0.0, width = 0.0, height = 0.0;
 
 	PHP_CAIRO_ERROR_HANDLING(FALSE)
-	if (zend_parse_method_parameters(ZEND_NUM_ARGS() TSRMLS_CC, getThis(), "Odddd", &surface_zval, cairo_ce_cairosurface, &x, &y, &width, &height) == FAILURE) {
+	if (zend_parse_method_parameters(ZEND_NUM_ARGS() , getThis(), "Odddd", &surface_zval, cairo_ce_cairosurface, &x, &y, &width, &height) == FAILURE) {
 		PHP_CAIRO_RESTORE_ERRORS(FALSE)
 		return;
 	}
 	PHP_CAIRO_RESTORE_ERRORS(FALSE)
 
-	surface_object = (cairo_surface_object *)cairo_surface_object_get(surface_zval TSRMLS_CC);
+	surface_object = (cairo_surface_object *)cairo_surface_object_get(surface_zval );
 	cairo_surface_mark_dirty_rectangle(surface_object->surface, x, y, width, height);
 }
 /* }}} */
@@ -294,13 +294,13 @@ PHP_FUNCTION(cairo_surface_set_device_offset)
 	double x = 0.0, y = 0.0;
 
 	PHP_CAIRO_ERROR_HANDLING(FALSE)
-	if (zend_parse_method_parameters(ZEND_NUM_ARGS() TSRMLS_CC, getThis(), "Odd", &surface_zval, cairo_ce_cairosurface, &x, &y) == FAILURE) {
+	if (zend_parse_method_parameters(ZEND_NUM_ARGS() , getThis(), "Odd", &surface_zval, cairo_ce_cairosurface, &x, &y) == FAILURE) {
 		PHP_CAIRO_RESTORE_ERRORS(FALSE)
 		return;
 	}
 	PHP_CAIRO_RESTORE_ERRORS(FALSE)
 
-	surface_object = (cairo_surface_object *)cairo_surface_object_get(surface_zval TSRMLS_CC);
+	surface_object = (cairo_surface_object *)cairo_surface_object_get(surface_zval );
 	cairo_surface_set_device_offset(surface_object->surface, x, y);
 }
 /* }}} */
@@ -315,13 +315,13 @@ PHP_FUNCTION(cairo_surface_get_device_offset)
 	double x, y;
 
 	PHP_CAIRO_ERROR_HANDLING(FALSE)
-	if (zend_parse_method_parameters(ZEND_NUM_ARGS() TSRMLS_CC, getThis(), "O", &surface_zval, cairo_ce_cairosurface) == FAILURE) {
+	if (zend_parse_method_parameters(ZEND_NUM_ARGS() , getThis(), "O", &surface_zval, cairo_ce_cairosurface) == FAILURE) {
 		PHP_CAIRO_RESTORE_ERRORS(FALSE)
 		return;
 	}
 	PHP_CAIRO_RESTORE_ERRORS(FALSE)
 
-	surface_object = (cairo_surface_object *)cairo_surface_object_get(surface_zval TSRMLS_CC);
+	surface_object = (cairo_surface_object *)cairo_surface_object_get(surface_zval );
 	cairo_surface_get_device_offset(surface_object->surface, &x, &y);
 
 	array_init(return_value);
@@ -342,13 +342,13 @@ PHP_FUNCTION(cairo_surface_set_fallback_resolution)
 	double x = 0.0, y = 0.0;
 
 	PHP_CAIRO_ERROR_HANDLING(FALSE)
-	if (zend_parse_method_parameters(ZEND_NUM_ARGS() TSRMLS_CC, getThis(), "Odd", &surface_zval, cairo_ce_cairosurface, &x, &y) == FAILURE) {
+	if (zend_parse_method_parameters(ZEND_NUM_ARGS() , getThis(), "Odd", &surface_zval, cairo_ce_cairosurface, &x, &y) == FAILURE) {
 		PHP_CAIRO_RESTORE_ERRORS(FALSE)
 		return;
 	}
 	PHP_CAIRO_RESTORE_ERRORS(FALSE)
 
-	surface_object = (cairo_surface_object *)cairo_surface_object_get(surface_zval TSRMLS_CC);
+	surface_object = (cairo_surface_object *)cairo_surface_object_get(surface_zval );
 	cairo_surface_set_fallback_resolution(surface_object->surface, x, y);
 }
 /* }}} */
@@ -364,13 +364,13 @@ PHP_FUNCTION(cairo_surface_get_fallback_resolution)
 	double x, y;
 
 	PHP_CAIRO_ERROR_HANDLING(FALSE)
-	if (zend_parse_method_parameters(ZEND_NUM_ARGS() TSRMLS_CC, getThis(), "O", &surface_zval, cairo_ce_cairosurface) == FAILURE) {
+	if (zend_parse_method_parameters(ZEND_NUM_ARGS() , getThis(), "O", &surface_zval, cairo_ce_cairosurface) == FAILURE) {
 		PHP_CAIRO_RESTORE_ERRORS(FALSE)
 		return;
 	}
 	PHP_CAIRO_RESTORE_ERRORS(FALSE)
 
-	surface_object = (cairo_surface_object *)cairo_surface_object_get(surface_zval TSRMLS_CC);
+	surface_object = (cairo_surface_object *)cairo_surface_object_get(surface_zval );
 	cairo_surface_get_fallback_resolution(surface_object->surface, &x, &y);
 
 	array_init(return_value);
@@ -389,13 +389,13 @@ PHP_FUNCTION(cairo_surface_get_type)
 	cairo_surface_object *surface_object;
 
 	PHP_CAIRO_ERROR_HANDLING(FALSE)
-	if (zend_parse_method_parameters(ZEND_NUM_ARGS() TSRMLS_CC, getThis(), "O", &surface_zval, cairo_ce_cairosurface) == FAILURE) {
+	if (zend_parse_method_parameters(ZEND_NUM_ARGS() , getThis(), "O", &surface_zval, cairo_ce_cairosurface) == FAILURE) {
 		PHP_CAIRO_RESTORE_ERRORS(FALSE)
 		return;
 	}
 	PHP_CAIRO_RESTORE_ERRORS(FALSE)
 
-	surface_object = (cairo_surface_object *)cairo_surface_object_get(surface_zval TSRMLS_CC);
+	surface_object = (cairo_surface_object *)cairo_surface_object_get(surface_zval );
 	RETURN_LONG(cairo_surface_get_type(surface_object->surface));
 }
 /* }}} */
@@ -411,13 +411,13 @@ PHP_FUNCTION(cairo_surface_show_page)
 	cairo_surface_object *surface_object;
 
 	PHP_CAIRO_ERROR_HANDLING(FALSE)
-	if (zend_parse_method_parameters(ZEND_NUM_ARGS() TSRMLS_CC, getThis(), "O", &surface_zval, cairo_ce_cairosurface) == FAILURE) {
+	if (zend_parse_method_parameters(ZEND_NUM_ARGS() , getThis(), "O", &surface_zval, cairo_ce_cairosurface) == FAILURE) {
 		PHP_CAIRO_RESTORE_ERRORS(FALSE)
 		return;
 	}
 	PHP_CAIRO_RESTORE_ERRORS(FALSE)
 
-	surface_object = (cairo_surface_object *)cairo_surface_object_get(surface_zval TSRMLS_CC);
+	surface_object = (cairo_surface_object *)cairo_surface_object_get(surface_zval );
 	cairo_surface_show_page(surface_object->surface);
 }
 /* }}} */
@@ -433,13 +433,13 @@ PHP_FUNCTION(cairo_surface_copy_page)
 	cairo_surface_object *surface_object;
 
 	PHP_CAIRO_ERROR_HANDLING(FALSE)
-	if (zend_parse_method_parameters(ZEND_NUM_ARGS() TSRMLS_CC, getThis(), "O", &surface_zval, cairo_ce_cairosurface) == FAILURE) {
+	if (zend_parse_method_parameters(ZEND_NUM_ARGS() , getThis(), "O", &surface_zval, cairo_ce_cairosurface) == FAILURE) {
 		PHP_CAIRO_RESTORE_ERRORS(FALSE)
 		return;
 	}
 	PHP_CAIRO_RESTORE_ERRORS(FALSE)
 
-	surface_object = (cairo_surface_object *)cairo_surface_object_get(surface_zval TSRMLS_CC);
+	surface_object = (cairo_surface_object *)cairo_surface_object_get(surface_zval );
 	cairo_surface_copy_page(surface_object->surface);
 }
 /* }}} */
@@ -456,13 +456,13 @@ PHP_FUNCTION(cairo_surface_has_show_text_glyphs)
 	cairo_surface_object *surface_object;
 
 	PHP_CAIRO_ERROR_HANDLING(FALSE)
-	if (zend_parse_method_parameters(ZEND_NUM_ARGS() TSRMLS_CC, getThis(), "O", &surface_zval, cairo_ce_cairosurface) == FAILURE) {
+	if (zend_parse_method_parameters(ZEND_NUM_ARGS() , getThis(), "O", &surface_zval, cairo_ce_cairosurface) == FAILURE) {
 		PHP_CAIRO_RESTORE_ERRORS(FALSE)
 		return;
 	}
 	PHP_CAIRO_RESTORE_ERRORS(FALSE)
 
-	surface_object = (cairo_surface_object *)cairo_surface_object_get(surface_zval TSRMLS_CC);
+	surface_object = (cairo_surface_object *)cairo_surface_object_get(surface_zval );
 	RETURN_BOOL(cairo_surface_has_show_text_glyphs(surface_object->surface));
 }
 /* }}} */
@@ -484,13 +484,13 @@ PHP_FUNCTION(cairo_surface_write_to_png)
 	cairo_status_t status;
 
 	PHP_CAIRO_ERROR_HANDLING(FALSE)
-	if (zend_parse_method_parameters(ZEND_NUM_ARGS() TSRMLS_CC, getThis(), "Oz", &surface_zval, cairo_ce_cairosurface, &stream_zval) == FAILURE) {
+	if (zend_parse_method_parameters(ZEND_NUM_ARGS() , getThis(), "Oz", &surface_zval, cairo_ce_cairosurface, &stream_zval) == FAILURE) {
 		PHP_CAIRO_RESTORE_ERRORS(FALSE)
 		return;
 	}
 	PHP_CAIRO_RESTORE_ERRORS(FALSE)
 
-	surface_object = (cairo_surface_object *)cairo_surface_object_get(surface_zval TSRMLS_CC);
+	surface_object = (cairo_surface_object *)cairo_surface_object_get(surface_zval );
 
 	if(Z_TYPE_P(stream_zval) == IS_STRING) {
 		stream = php_stream_open_wrapper(Z_STRVAL_P(stream_zval), "w+b", REPORT_ERRORS|ENFORCE_SAFE_MODE, NULL);
@@ -499,7 +499,7 @@ PHP_FUNCTION(cairo_surface_write_to_png)
 		php_stream_from_zval(stream, &stream_zval);	
 	} else {
 		if(getThis()) {
-			zend_throw_exception(cairo_ce_cairoexception, "CairoSurface::writeToPng() expects parameter 1 to be a string or a stream resource", 0 TSRMLS_CC);
+			zend_throw_exception(cairo_ce_cairoexception, "CairoSurface::writeToPng() expects parameter 1 to be a string or a stream resource", 0 );
 			return;
 		} else {
 			zend_error(E_WARNING, "cairo_surface_write_to_png() expects parameter 1 to be a string or a stream resource");
@@ -615,7 +615,7 @@ zend_object_value cairo_surface_object_new(zend_class_entry *ce TSRMLS_DC)
 #else
 	object_properties_init(&surface->std, ce);
 #endif
-	retval.handle = zend_objects_store_put(surface, NULL, (zend_objects_free_object_storage_t)cairo_surface_object_destroy, NULL TSRMLS_CC);
+	retval.handle = zend_objects_store_put(surface, NULL, (zend_objects_free_object_storage_t)cairo_surface_object_destroy, NULL );
 	retval.handlers = zend_get_std_object_handlers();
 	return retval;
 }
@@ -731,16 +731,16 @@ PHP_MINIT_FUNCTION(cairo_surface)
 	zend_class_entry ce, content_ce, type_ce;
 
 	INIT_CLASS_ENTRY(ce, "CairoSurface", cairo_surface_methods);
-	cairo_ce_cairosurface = zend_register_internal_class(&ce TSRMLS_CC);
+	cairo_ce_cairosurface = zend_register_internal_class(&ce );
 	cairo_ce_cairosurface->create_object = cairo_surface_object_new;
 	cairo_ce_cairosurface->ce_flags |= ZEND_ACC_EXPLICIT_ABSTRACT_CLASS;
 
 	INIT_CLASS_ENTRY(content_ce, "CairoContent", NULL);
-	cairo_ce_cairocontent = zend_register_internal_class(&content_ce TSRMLS_CC);
+	cairo_ce_cairocontent = zend_register_internal_class(&content_ce );
 	cairo_ce_cairocontent->ce_flags |= ZEND_ACC_EXPLICIT_ABSTRACT_CLASS | ZEND_ACC_FINAL_CLASS;
 
 	#define REGISTER_CAIRO_CONTENT_LONG_CONST(const_name, value) \
-	zend_declare_class_constant_long(cairo_ce_cairocontent, const_name, sizeof(const_name)-1, (long)value TSRMLS_CC); \
+	zend_declare_class_constant_long(cairo_ce_cairocontent, const_name, sizeof(const_name)-1, (long)value ); \
 	REGISTER_LONG_CONSTANT(#value,  value,  CONST_CS | CONST_PERSISTENT);
 
 	REGISTER_CAIRO_CONTENT_LONG_CONST("COLOR", CAIRO_CONTENT_COLOR);
@@ -748,11 +748,11 @@ PHP_MINIT_FUNCTION(cairo_surface)
 	REGISTER_CAIRO_CONTENT_LONG_CONST("COLOR_ALPHA", CAIRO_CONTENT_COLOR_ALPHA);
 
 	INIT_CLASS_ENTRY(type_ce, "CairoSurfaceType", NULL);
-	cairo_ce_cairosurfacetype = zend_register_internal_class(&type_ce TSRMLS_CC);
+	cairo_ce_cairosurfacetype = zend_register_internal_class(&type_ce );
 	cairo_ce_cairosurfacetype->ce_flags |= ZEND_ACC_EXPLICIT_ABSTRACT_CLASS | ZEND_ACC_FINAL_CLASS;
 
 	#define REGISTER_CAIRO_SURFACETYPE_LONG_CONST(const_name, value) \
-	zend_declare_class_constant_long(cairo_ce_cairosurfacetype, const_name, sizeof(const_name)-1, (long)value TSRMLS_CC); \
+	zend_declare_class_constant_long(cairo_ce_cairosurfacetype, const_name, sizeof(const_name)-1, (long)value ); \
 	REGISTER_LONG_CONSTANT(#value,  value,  CONST_CS | CONST_PERSISTENT);
 
 	REGISTER_CAIRO_SURFACETYPE_LONG_CONST("IMAGE", CAIRO_SURFACE_TYPE_IMAGE);

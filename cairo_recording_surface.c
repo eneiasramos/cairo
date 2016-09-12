@@ -68,7 +68,7 @@ PHP_METHOD(CairoRecordingSurface, __construct)
 	cairo_rectangle_t *rectangle = NULL;
 
 	PHP_CAIRO_ERROR_HANDLING(TRUE)
-	if (zend_parse_parameters(ZEND_NUM_ARGS() TSRMLS_CC, "l|a", &content, &extents) == FAILURE) {
+	if (zend_parse_parameters(ZEND_NUM_ARGS() , "l|a", &content, &extents) == FAILURE) {
 		PHP_CAIRO_RESTORE_ERRORS(TRUE)
 		return;
 	}
@@ -78,14 +78,14 @@ PHP_METHOD(CairoRecordingSurface, __construct)
 	}
 	PHP_CAIRO_RESTORE_ERRORS(TRUE)
 
-	surface_object = (cairo_surface_object *)zend_object_store_get_object(getThis() TSRMLS_CC);
+	surface_object = (cairo_surface_object *)zend_object_store_get_object(getThis() );
 	surface_object->surface = cairo_recording_surface_create(content, rectangle);
 
 	if (rectangle != NULL) {
 		efree(rectangle);
 	}
 
-	php_cairo_throw_exception(cairo_surface_status(surface_object->surface) TSRMLS_CC);
+	php_cairo_throw_exception(cairo_surface_status(surface_object->surface) );
 }
 /* }}} */
 
@@ -98,7 +98,7 @@ PHP_FUNCTION(cairo_recording_surface_create)
 	cairo_rectangle_t *rectangle;
 	zval *extents;
 
-	if (zend_parse_parameters(ZEND_NUM_ARGS() TSRMLS_CC, "l|a", &content, &extents) == FAILURE) {
+	if (zend_parse_parameters(ZEND_NUM_ARGS() , "l|a", &content, &extents) == FAILURE) {
 		return;
 	}
 
@@ -107,10 +107,10 @@ PHP_FUNCTION(cairo_recording_surface_create)
 	}
 
 	object_init_ex(return_value, cairo_ce_cairorecordingsurface);
-	surface_object = (cairo_surface_object *)zend_object_store_get_object(return_value TSRMLS_CC);
+	surface_object = (cairo_surface_object *)zend_object_store_get_object(return_value );
 	surface_object->surface = cairo_recording_surface_create(content, rectangle);
 	efree(rectangle);
-	php_cairo_trigger_error(cairo_surface_status(surface_object->surface) TSRMLS_CC);
+	php_cairo_trigger_error(cairo_surface_status(surface_object->surface) );
 }
 /* }}} */
 
@@ -120,11 +120,11 @@ PHP_FUNCTION(cairo_recording_surface_ink_extents)
 	cairo_surface_object *surface_object;
 	double x, y, width, height;
 
-	if (zend_parse_method_parameters(ZEND_NUM_ARGS() TSRMLS_CC, getThis(), "O", &surface_zval, cairo_ce_cairorecordingsurface) == FAILURE) {
+	if (zend_parse_method_parameters(ZEND_NUM_ARGS() , getThis(), "O", &surface_zval, cairo_ce_cairorecordingsurface) == FAILURE) {
 		return;
 	}
 	
-	surface_object = (cairo_surface_object *)zend_object_store_get_object(getThis() TSRMLS_CC);
+	surface_object = (cairo_surface_object *)zend_object_store_get_object(getThis() );
 	cairo_recording_surface_ink_extents(surface_object->surface, &x, &y, &width, &height);
 	array_init(return_value);
 	add_assoc_double(return_value, "x", x);
@@ -146,7 +146,7 @@ PHP_MINIT_FUNCTION(cairo_recording_surface)
 	zend_class_entry ce;
 
 	INIT_CLASS_ENTRY(ce, "CairoRecordingSurface", cairo_recording_surface_methods);
-	cairo_ce_cairorecordingsurface = zend_register_internal_class_ex(&ce, cairo_ce_cairosurface, "CairoSurface" TSRMLS_CC);
+	cairo_ce_cairorecordingsurface = zend_register_internal_class_ex(&ce, cairo_ce_cairosurface, "CairoSurface" );
 	cairo_ce_cairorecordingsurface->create_object = cairo_surface_object_new;
 
 	return SUCCESS;

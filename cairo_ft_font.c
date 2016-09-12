@@ -152,7 +152,7 @@ PHP_FUNCTION(cairo_ft_font_face_create)
 	zend_bool owned_stream = 0;
 
 	PHP_CAIRO_ERROR_HANDLING(FALSE)
-	if (zend_parse_parameters(ZEND_NUM_ARGS() TSRMLS_CC, "z|l",
+	if (zend_parse_parameters(ZEND_NUM_ARGS() , "z|l",
 				&stream_zval, &load_flags) == FAILURE)
 	{
 		PHP_CAIRO_RESTORE_ERRORS(FALSE)
@@ -183,7 +183,7 @@ PHP_FUNCTION(cairo_ft_font_face_create)
 	}
 
 	object_init_ex(return_value, cairo_ce_cairoftfont);
-	font_face_object = (cairo_ft_font_face_object *)zend_object_store_get_object(return_value TSRMLS_CC);
+	font_face_object = (cairo_ft_font_face_object *)zend_object_store_get_object(return_value );
     
     ft_container = pecalloc(1, sizeof(pecl_ft_container), 1);
     
@@ -194,10 +194,10 @@ PHP_FUNCTION(cairo_ft_font_face_create)
 		RETURN_NULL();
 	}
 	
-	error = php_cairo_create_ft_font_face(ft_container, font_face_object, stream, owned_stream, load_flags, 0 TSRMLS_CC);
+	error = php_cairo_create_ft_font_face(ft_container, font_face_object, stream, owned_stream, load_flags, 0 );
 
 	if (error) {
-		const char *err_string = php_cairo_get_ft_error(error TSRMLS_CC);
+		const char *err_string = php_cairo_get_ft_error(error );
 		zend_error(E_WARNING, "cairo_ft_font_face_create(): An error occurred opening the file: %s", err_string);
         pefree(ft_container, 1);
 		RETURN_NULL();
@@ -224,7 +224,7 @@ PHP_METHOD(CairoFtFontFace, __construct)
 	php_stream_statbuf ssbuf;
 
 	PHP_CAIRO_ERROR_HANDLING(TRUE)
-	if (zend_parse_parameters(ZEND_NUM_ARGS() TSRMLS_CC, "z|l",
+	if (zend_parse_parameters(ZEND_NUM_ARGS() , "z|l",
 				&stream_zval, &load_flags) == FAILURE)
 	{
 		PHP_CAIRO_RESTORE_ERRORS(TRUE)
@@ -238,7 +238,7 @@ PHP_METHOD(CairoFtFontFace, __construct)
 		php_stream_from_zval(stream, &stream_zval);	
 	} else {	
 		PHP_CAIRO_RESTORE_ERRORS(TRUE)
-		zend_throw_exception(cairo_ce_cairoexception, "CairoFtFontFace::__construct() expects parameter 1 to be a string or a stream resource", 0 TSRMLS_CC);
+		zend_throw_exception(cairo_ce_cairoexception, "CairoFtFontFace::__construct() expects parameter 1 to be a string or a stream resource", 0 );
 		return;
 	}
 	PHP_CAIRO_RESTORE_ERRORS(TRUE)
@@ -248,31 +248,31 @@ PHP_METHOD(CairoFtFontFace, __construct)
 	}
 	
 	if(php_stream_stat(stream, &ssbuf) != 0) {
-		zend_throw_exception(cairo_ce_cairoexception, "Cannot determine size of stream", 0 TSRMLS_CC);
+		zend_throw_exception(cairo_ce_cairoexception, "Cannot determine size of stream", 0 );
 		return;
 	}
 
-	font_face_object = (cairo_ft_font_face_object *)zend_object_store_get_object(getThis() TSRMLS_CC);
+	font_face_object = (cairo_ft_font_face_object *)zend_object_store_get_object(getThis() );
 
     ft_container = pecalloc(1, sizeof(pecl_ft_container), TRUE);
     
 	error = FT_Init_FreeType(&ft_container->ft_lib);
 	if(error) {
         pefree(ft_container, TRUE);
-		zend_throw_exception(cairo_ce_cairoexception, "Failed to initalise FreeType library", 0 TSRMLS_CC);
+		zend_throw_exception(cairo_ce_cairoexception, "Failed to initalise FreeType library", 0 );
 		RETURN_NULL();
 	}
 	
-	error = php_cairo_create_ft_font_face(ft_container, font_face_object, stream, owned_stream, load_flags, 1 TSRMLS_CC);
+	error = php_cairo_create_ft_font_face(ft_container, font_face_object, stream, owned_stream, load_flags, 1 );
 
 	if (error) {
-		const char *err_string = php_cairo_get_ft_error(error TSRMLS_CC);
-		zend_throw_exception_ex(cairo_ce_cairoexception, error, "CairoFtFontFace::__construct(): An error occurred opening the file %s", err_string TSRMLS_CC);
+		const char *err_string = php_cairo_get_ft_error(error );
+		zend_throw_exception_ex(cairo_ce_cairoexception, error, "CairoFtFontFace::__construct(): An error occurred opening the file %s", err_string );
         pefree(ft_container, 1);
 		RETURN_NULL();
 	}
 
-	php_cairo_throw_exception(cairo_font_face_status(font_face_object->font_face) TSRMLS_CC);
+	php_cairo_throw_exception(cairo_font_face_status(font_face_object->font_face) );
 }
 
 /* }}} */
@@ -331,7 +331,7 @@ zend_object_value cairo_ft_font_face_object_new(zend_class_entry *ce TSRMLS_DC)
 #else
 	object_properties_init(&font_face->std, ce);
 #endif
-	retval.handle = zend_objects_store_put(font_face, NULL, (zend_objects_free_object_storage_t)cairo_ft_font_face_object_destroy, NULL TSRMLS_CC);
+	retval.handle = zend_objects_store_put(font_face, NULL, (zend_objects_free_object_storage_t)cairo_ft_font_face_object_destroy, NULL );
 	retval.handlers = zend_get_std_object_handlers();
 	return retval;
 }
@@ -345,7 +345,7 @@ PHP_MINIT_FUNCTION(cairo_ft_font)
 	zend_class_entry ftfont_ce;
 
 	INIT_CLASS_ENTRY(ftfont_ce, "CairoFtFontFace", cairo_ft_font_methods);
-	cairo_ce_cairoftfont = zend_register_internal_class_ex(&ftfont_ce, cairo_ce_cairofontface, "CairoFontFace" TSRMLS_CC);
+	cairo_ce_cairoftfont = zend_register_internal_class_ex(&ftfont_ce, cairo_ce_cairofontface, "CairoFontFace" );
 	cairo_ce_cairoftfont->create_object = cairo_ft_font_face_object_new;
 
 	return SUCCESS;

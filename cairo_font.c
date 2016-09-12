@@ -49,16 +49,16 @@ PHP_FUNCTION(cairo_toy_font_face_create)
    	long slant = CAIRO_FONT_SLANT_NORMAL, weight = CAIRO_FONT_WEIGHT_NORMAL;
 	cairo_font_face_object *fontface_object;
 
-	if(zend_parse_parameters(ZEND_NUM_ARGS() TSRMLS_CC, "s|ll", 
+	if(zend_parse_parameters(ZEND_NUM_ARGS() , "s|ll", 
 				&family, &family_len, 
 				&slant, &weight) == FAILURE) {
 		return;
 	}
 
 	object_init_ex(return_value, cairo_ce_cairotoyfontface);
-	fontface_object = (cairo_font_face_object *)zend_object_store_get_object(return_value TSRMLS_CC);
+	fontface_object = (cairo_font_face_object *)zend_object_store_get_object(return_value );
 	fontface_object->font_face = cairo_toy_font_face_create((const char *)family, slant, weight);
-	php_cairo_trigger_error(cairo_font_face_status(fontface_object->font_face) TSRMLS_CC);
+	php_cairo_trigger_error(cairo_font_face_status(fontface_object->font_face) );
 }
 
 /* {{{ proto void __construct(string family, long slant, long weight)
@@ -72,7 +72,7 @@ PHP_METHOD(CairoToyFontFace, __construct)
 	cairo_font_face_object *fontface_object;
 
 	PHP_CAIRO_ERROR_HANDLING(TRUE)
-	if(zend_parse_parameters(ZEND_NUM_ARGS() TSRMLS_CC, "s|ll", 
+	if(zend_parse_parameters(ZEND_NUM_ARGS() , "s|ll", 
 				&family, &family_len, 
 				&slant, &weight) == FAILURE) {
 		PHP_CAIRO_RESTORE_ERRORS(TRUE)
@@ -80,9 +80,9 @@ PHP_METHOD(CairoToyFontFace, __construct)
 	}
 	PHP_CAIRO_RESTORE_ERRORS(TRUE)
 
-	fontface_object = (cairo_font_face_object *)zend_object_store_get_object(getThis() TSRMLS_CC);
+	fontface_object = (cairo_font_face_object *)zend_object_store_get_object(getThis() );
 	fontface_object->font_face = cairo_toy_font_face_create((const char *)family, slant, weight);
-	php_cairo_throw_exception(cairo_font_face_status(fontface_object->font_face) TSRMLS_CC);
+	php_cairo_throw_exception(cairo_font_face_status(fontface_object->font_face) );
 }
 
 /* {{{ proto string cairo_toy_font_face_get_family(CairoToyFontFace object)
@@ -94,14 +94,14 @@ PHP_FUNCTION(cairo_toy_font_face_get_family)
 	cairo_font_face_object *font_face_object;
 
 	PHP_CAIRO_ERROR_HANDLING(FALSE)
-	if (zend_parse_method_parameters(ZEND_NUM_ARGS() TSRMLS_CC, getThis(), "O", &toy_font_face_zval, cairo_ce_cairotoyfontface) == FAILURE) {
+	if (zend_parse_method_parameters(ZEND_NUM_ARGS() , getThis(), "O", &toy_font_face_zval, cairo_ce_cairotoyfontface) == FAILURE) {
 		PHP_CAIRO_RESTORE_ERRORS(FALSE)
 		return;
 	}
 	PHP_CAIRO_RESTORE_ERRORS(FALSE)
 
-	font_face_object = (cairo_font_face_object *) cairo_font_face_object_get(toy_font_face_zval TSRMLS_CC);
-	RETURN_STRING(cairo_toy_font_face_get_family(font_face_object->font_face), 1);
+	font_face_object = (cairo_font_face_object *) cairo_font_face_object_get(toy_font_face_zval );
+	RETURN_STRING(cairo_toy_font_face_get_family(font_face_object->font_face));
 }
 /* }}} */
 
@@ -114,13 +114,13 @@ PHP_FUNCTION(cairo_toy_font_face_get_slant)
 	cairo_font_face_object *font_face_object;
 
 	PHP_CAIRO_ERROR_HANDLING(FALSE)
-	if (zend_parse_method_parameters(ZEND_NUM_ARGS() TSRMLS_CC, getThis(), "O", &toy_font_face_zval, cairo_ce_cairotoyfontface) == FAILURE) {
+	if (zend_parse_method_parameters(ZEND_NUM_ARGS() , getThis(), "O", &toy_font_face_zval, cairo_ce_cairotoyfontface) == FAILURE) {
 		PHP_CAIRO_RESTORE_ERRORS(FALSE)
 		return;
 	}
 	PHP_CAIRO_RESTORE_ERRORS(FALSE)
 
-	font_face_object = (cairo_font_face_object *) cairo_font_face_object_get(toy_font_face_zval TSRMLS_CC);
+	font_face_object = (cairo_font_face_object *) cairo_font_face_object_get(toy_font_face_zval );
 	RETURN_LONG(cairo_toy_font_face_get_slant(font_face_object->font_face));
 }
 /* }}} */
@@ -134,13 +134,13 @@ PHP_FUNCTION(cairo_toy_font_face_get_weight)
 	cairo_font_face_object *font_face_object;
 
 	PHP_CAIRO_ERROR_HANDLING(FALSE)
-	if (zend_parse_method_parameters(ZEND_NUM_ARGS() TSRMLS_CC, getThis(), "O", &toy_font_face_zval, cairo_ce_cairotoyfontface) == FAILURE) {
+	if (zend_parse_method_parameters(ZEND_NUM_ARGS() , getThis(), "O", &toy_font_face_zval, cairo_ce_cairotoyfontface) == FAILURE) {
 		PHP_CAIRO_RESTORE_ERRORS(FALSE)
 		return;
 	}
 	PHP_CAIRO_RESTORE_ERRORS(FALSE)
 
-	font_face_object = (cairo_font_face_object *) cairo_font_face_object_get(toy_font_face_zval TSRMLS_CC);
+	font_face_object = (cairo_font_face_object *) cairo_font_face_object_get(toy_font_face_zval );
 	RETURN_LONG(cairo_toy_font_face_get_weight(font_face_object->font_face));
 }
 /* }}} */
@@ -167,15 +167,15 @@ PHP_MINIT_FUNCTION(cairo_font)
 	zend_class_entry fontweight_ce;
 
 	INIT_CLASS_ENTRY(toyfont_ce, "CairoToyFontFace", cairo_toy_font_face_methods);
-	cairo_ce_cairotoyfontface = zend_register_internal_class_ex(&toyfont_ce, cairo_ce_cairofontface, "CairoFontFace" TSRMLS_CC);
+	cairo_ce_cairotoyfontface = zend_register_internal_class_ex(&toyfont_ce, cairo_ce_cairofontface, "CairoFontFace" );
 	cairo_ce_cairotoyfontface->create_object = cairo_font_face_object_new;
 
     INIT_CLASS_ENTRY(fontslant_ce, "CairoFontSlant", NULL);
-    cairo_ce_cairofontslant = zend_register_internal_class(&fontslant_ce TSRMLS_CC);
+    cairo_ce_cairofontslant = zend_register_internal_class(&fontslant_ce );
     cairo_ce_cairofontslant->ce_flags |= ZEND_ACC_EXPLICIT_ABSTRACT_CLASS | ZEND_ACC_FINAL_CLASS;
 
     #define REGISTER_CAIRO_FONTSLANT_LONG_CONST(const_name, value) \
-    zend_declare_class_constant_long(cairo_ce_cairofontslant, const_name, sizeof(const_name)-1, (long)value TSRMLS_CC); \
+    zend_declare_class_constant_long(cairo_ce_cairofontslant, const_name, sizeof(const_name)-1, (long)value ); \
     REGISTER_LONG_CONSTANT(#value,  value,  CONST_CS | CONST_PERSISTENT);
 
     REGISTER_CAIRO_FONTSLANT_LONG_CONST("NORMAL", CAIRO_FONT_SLANT_NORMAL);
@@ -183,11 +183,11 @@ PHP_MINIT_FUNCTION(cairo_font)
     REGISTER_CAIRO_FONTSLANT_LONG_CONST("OBLIQUE", CAIRO_FONT_SLANT_OBLIQUE);
 
     INIT_CLASS_ENTRY(fontweight_ce, "CairoFontWeight", NULL);
-    cairo_ce_cairofontweight = zend_register_internal_class(&fontweight_ce TSRMLS_CC);
+    cairo_ce_cairofontweight = zend_register_internal_class(&fontweight_ce );
     cairo_ce_cairofontweight->ce_flags |= ZEND_ACC_EXPLICIT_ABSTRACT_CLASS | ZEND_ACC_FINAL_CLASS;
 
     #define REGISTER_CAIRO_FONTWEIGHT_LONG_CONST(const_name, value) \
-    zend_declare_class_constant_long(cairo_ce_cairofontweight, const_name, sizeof(const_name)-1, (long)value TSRMLS_CC); \
+    zend_declare_class_constant_long(cairo_ce_cairofontweight, const_name, sizeof(const_name)-1, (long)value ); \
     REGISTER_LONG_CONSTANT(#value,  value,  CONST_CS | CONST_PERSISTENT);
 
     REGISTER_CAIRO_FONTWEIGHT_LONG_CONST("NORMAL", CAIRO_FONT_WEIGHT_NORMAL);

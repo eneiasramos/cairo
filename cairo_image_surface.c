@@ -84,15 +84,15 @@ PHP_METHOD(CairoImageSurface, __construct)
 	cairo_surface_object *surface_object;
 
 	PHP_CAIRO_ERROR_HANDLING(TRUE)
-	if (zend_parse_parameters(ZEND_NUM_ARGS() TSRMLS_CC, "lll", &format, &width, &height) == FAILURE) {
+	if (zend_parse_parameters(ZEND_NUM_ARGS() , "lll", &format, &width, &height) == FAILURE) {
 		PHP_CAIRO_RESTORE_ERRORS(TRUE)
 		return;
 	}
 	PHP_CAIRO_RESTORE_ERRORS(TRUE)
 
-	surface_object = (cairo_surface_object *)zend_object_store_get_object(getThis() TSRMLS_CC);
+	surface_object = (cairo_surface_object *)zend_object_store_get_object(getThis() );
 	surface_object->surface = cairo_image_surface_create(format, width, height);
-	php_cairo_throw_exception(cairo_surface_status(surface_object->surface) TSRMLS_CC);
+	php_cairo_throw_exception(cairo_surface_status(surface_object->surface) );
 }
 /* }}} */
 
@@ -103,14 +103,14 @@ PHP_FUNCTION(cairo_image_surface_create)
 	long format, width, height;
 	cairo_surface_object *surface_object;
 
-	if (zend_parse_parameters(ZEND_NUM_ARGS() TSRMLS_CC, "lll", &format, &width, &height) == FAILURE) {
+	if (zend_parse_parameters(ZEND_NUM_ARGS() , "lll", &format, &width, &height) == FAILURE) {
 		return;
 	}
 
 	object_init_ex(return_value, cairo_ce_cairoimagesurface);
-	surface_object = (cairo_surface_object *)zend_object_store_get_object(return_value TSRMLS_CC);
+	surface_object = (cairo_surface_object *)zend_object_store_get_object(return_value );
 	surface_object->surface = cairo_image_surface_create(format, width, height);
-	php_cairo_trigger_error(cairo_surface_status(surface_object->surface) TSRMLS_CC);
+	php_cairo_trigger_error(cairo_surface_status(surface_object->surface) );
 }
 /* }}} */
 
@@ -120,11 +120,11 @@ PHP_FUNCTION(cairo_image_surface_create_for_data)
 {
 	/* NOTE: we have to keep the data buffer around, so we put it in the cairo_surface_object */
 	char *data;
-	int data_len;
+	size_t data_len;
 	long format, width, height, stride = -1;
 	cairo_surface_object *surface_object;
 
-	if (zend_parse_parameters(ZEND_NUM_ARGS() TSRMLS_CC, "slll", &data, &data_len, &format, &width, &height) == FAILURE) {
+	if (zend_parse_parameters(ZEND_NUM_ARGS() , "slll", &data, &data_len, &format, &width, &height) == FAILURE) {
 		return;
 	}
 
@@ -152,7 +152,7 @@ PHP_FUNCTION(cairo_image_surface_create_for_data)
 
 	/* Create the object, stick in the buffer and surface, check our status */
 	object_init_ex(return_value, cairo_ce_cairoimagesurface);
-	surface_object = (cairo_surface_object *)zend_object_store_get_object(return_value TSRMLS_CC);
+	surface_object = (cairo_surface_object *)zend_object_store_get_object(return_value );
 	/* allocate our internal surface object buffer - has to be left lying around until we destroy the image */
 	surface_object->buffer = safe_emalloc(stride * height, sizeof(char), 0);
 	
@@ -165,7 +165,7 @@ PHP_FUNCTION(cairo_image_surface_create_for_data)
 	surface_object->buffer = memcpy(surface_object->buffer, data, data_len);
 	/* create our surface and check for errors */
 	surface_object->surface = cairo_image_surface_create_for_data((unsigned char*)surface_object->buffer, format, width, height, stride);
-	php_cairo_trigger_error(cairo_surface_status(surface_object->surface) TSRMLS_CC);
+	php_cairo_trigger_error(cairo_surface_status(surface_object->surface) );
 }
 /* }}} */
 
@@ -175,24 +175,24 @@ PHP_METHOD(CairoImageSurface, createForData)
 {
 	/* NOTE: we have to keep the data buffer around, so we put it in the cairo_surface_object */
 	char *data;
-	int data_len;
+	size_t data_len;
 	long format, width, height, stride = -1;
 	cairo_surface_object *surface_object;
 
 	PHP_CAIRO_ERROR_HANDLING(TRUE)
-	if (zend_parse_parameters(ZEND_NUM_ARGS() TSRMLS_CC, "slll", &data, &data_len, &format, &width, &height) == FAILURE) {
+	if (zend_parse_parameters(ZEND_NUM_ARGS() , "slll", &data, &data_len, &format, &width, &height) == FAILURE) {
 		PHP_CAIRO_RESTORE_ERRORS(TRUE)
 		return;
 	}
 	PHP_CAIRO_RESTORE_ERRORS(TRUE)
 	
 	if (format < 0) {
-		zend_throw_exception(cairo_ce_cairoexception, "CairoImageSurface::createForData(): invalid format", 0 TSRMLS_CC);
+		zend_throw_exception(cairo_ce_cairoexception, "CairoImageSurface::createForData(): invalid format", 0 );
 		return;
 	}
 
 	if (width < 1 || height < 1) {
-		zend_throw_exception(cairo_ce_cairoexception, "CairoImageSurface::createForData(): invalid surface dimensions", 0 TSRMLS_CC);
+		zend_throw_exception(cairo_ce_cairoexception, "CairoImageSurface::createForData(): invalid surface dimensions", 0 );
 		return;
 	}
 	
@@ -215,12 +215,12 @@ PHP_METHOD(CairoImageSurface, createForData)
 
 	/* Create the object, stick in the buffer and surface, check our status */
 	object_init_ex(return_value, cairo_ce_cairoimagesurface);
-	surface_object = (cairo_surface_object *)zend_object_store_get_object(return_value TSRMLS_CC);
+	surface_object = (cairo_surface_object *)zend_object_store_get_object(return_value );
 	/* allocate our internal surface object buffer - has to be left lying around until we destroy the image */
 	surface_object->buffer = safe_emalloc(stride * height, sizeof(char), 0);
 
 	if(surface_object->buffer == NULL) {
-		zend_throw_exception(cairo_ce_cairoexception, "CairoImageSurface::createForData(): Could not allocate memory for buffer", 0 TSRMLS_CC);
+		zend_throw_exception(cairo_ce_cairoexception, "CairoImageSurface::createForData(): Could not allocate memory for buffer", 0 );
 		return;
 	}
 
@@ -228,7 +228,7 @@ PHP_METHOD(CairoImageSurface, createForData)
 	surface_object->buffer = memcpy(surface_object->buffer, data, data_len);
 	/* create our surface and check for errors */
 	surface_object->surface = cairo_image_surface_create_for_data((unsigned char*)surface_object->buffer, format, width, height, stride);
-	php_cairo_throw_exception(cairo_surface_status(surface_object->surface) TSRMLS_CC);
+	php_cairo_throw_exception(cairo_surface_status(surface_object->surface) );
 }
 /* }}} */
 
@@ -243,19 +243,19 @@ PHP_FUNCTION(cairo_image_surface_get_data)
 	long height, stride;
 
 	PHP_CAIRO_ERROR_HANDLING(FALSE)
-	if (zend_parse_method_parameters(ZEND_NUM_ARGS() TSRMLS_CC, getThis(), "O", &surface_zval, cairo_ce_cairoimagesurface) == FAILURE) {
+	if (zend_parse_method_parameters(ZEND_NUM_ARGS() , getThis(), "O", &surface_zval, cairo_ce_cairoimagesurface) == FAILURE) {
 		PHP_CAIRO_RESTORE_ERRORS(FALSE)
 		return;
 	}
 	PHP_CAIRO_RESTORE_ERRORS(FALSE)
 
-	surface_object = (cairo_surface_object *)cairo_surface_object_get(surface_zval TSRMLS_CC);
+	surface_object = (cairo_surface_object *)cairo_surface_object_get(surface_zval );
 	PHP_CAIRO_ERROR(cairo_surface_status(surface_object->surface));
 
 	data = cairo_image_surface_get_data(surface_object->surface);
 	height = cairo_image_surface_get_height(surface_object->surface);
 	stride = cairo_image_surface_get_stride(surface_object->surface);
-	RETURN_STRINGL(data, height * stride, 1);
+	RETURN_STRINGL(data, height * stride);
 }
 /* }}} */
 
@@ -268,13 +268,13 @@ PHP_FUNCTION(cairo_image_surface_get_format)
 	cairo_surface_object *surface_object;
 
 	PHP_CAIRO_ERROR_HANDLING(FALSE)
-	if (zend_parse_method_parameters(ZEND_NUM_ARGS() TSRMLS_CC, getThis(), "O", &surface_zval, cairo_ce_cairoimagesurface) == FAILURE) {
+	if (zend_parse_method_parameters(ZEND_NUM_ARGS() , getThis(), "O", &surface_zval, cairo_ce_cairoimagesurface) == FAILURE) {
 		PHP_CAIRO_RESTORE_ERRORS(FALSE)
 		return;
 	}
 	PHP_CAIRO_RESTORE_ERRORS(FALSE)
 
-	surface_object = (cairo_surface_object *)cairo_surface_object_get(surface_zval TSRMLS_CC);
+	surface_object = (cairo_surface_object *)cairo_surface_object_get(surface_zval );
 	PHP_CAIRO_ERROR(cairo_surface_status(surface_object->surface));
 
 	RETURN_LONG(cairo_image_surface_get_format(surface_object->surface));
@@ -290,13 +290,13 @@ PHP_FUNCTION(cairo_image_surface_get_width)
 	cairo_surface_object *surface_object;
 
 	PHP_CAIRO_ERROR_HANDLING(FALSE)
-	if (zend_parse_method_parameters(ZEND_NUM_ARGS() TSRMLS_CC, getThis(), "O", &surface_zval, cairo_ce_cairoimagesurface) == FAILURE) {
+	if (zend_parse_method_parameters(ZEND_NUM_ARGS() , getThis(), "O", &surface_zval, cairo_ce_cairoimagesurface) == FAILURE) {
 		PHP_CAIRO_RESTORE_ERRORS(FALSE)
 		return;
 	}
 	PHP_CAIRO_RESTORE_ERRORS(FALSE)
 
-	surface_object = (cairo_surface_object *)cairo_surface_object_get(surface_zval TSRMLS_CC);
+	surface_object = (cairo_surface_object *)cairo_surface_object_get(surface_zval );
 	PHP_CAIRO_ERROR(cairo_surface_status(surface_object->surface));
 
 	RETURN_LONG(cairo_image_surface_get_width(surface_object->surface));
@@ -312,13 +312,13 @@ PHP_FUNCTION(cairo_image_surface_get_height)
 	cairo_surface_object *surface_object;
 
 	PHP_CAIRO_ERROR_HANDLING(FALSE)
-	if (zend_parse_method_parameters(ZEND_NUM_ARGS() TSRMLS_CC, getThis(), "O", &surface_zval, cairo_ce_cairoimagesurface) == FAILURE) {
+	if (zend_parse_method_parameters(ZEND_NUM_ARGS() , getThis(), "O", &surface_zval, cairo_ce_cairoimagesurface) == FAILURE) {
 		PHP_CAIRO_RESTORE_ERRORS(FALSE)
 		return;
 	}
 	PHP_CAIRO_RESTORE_ERRORS(FALSE)
 
-	surface_object = (cairo_surface_object *)cairo_surface_object_get(surface_zval TSRMLS_CC);
+	surface_object = (cairo_surface_object *)cairo_surface_object_get(surface_zval );
 	PHP_CAIRO_ERROR(cairo_surface_status(surface_object->surface));
 
 	RETURN_LONG(cairo_image_surface_get_height(surface_object->surface));
@@ -334,13 +334,13 @@ PHP_FUNCTION(cairo_image_surface_get_stride)
 	cairo_surface_object *surface_object;
 
 	PHP_CAIRO_ERROR_HANDLING(FALSE)
-	if (zend_parse_method_parameters(ZEND_NUM_ARGS() TSRMLS_CC, getThis(), "O", &surface_zval, cairo_ce_cairoimagesurface) == FAILURE) {
+	if (zend_parse_method_parameters(ZEND_NUM_ARGS() , getThis(), "O", &surface_zval, cairo_ce_cairoimagesurface) == FAILURE) {
 		PHP_CAIRO_RESTORE_ERRORS(FALSE)
 		return;
 	}
 	PHP_CAIRO_RESTORE_ERRORS(FALSE)
 
-	surface_object = (cairo_surface_object *)cairo_surface_object_get(surface_zval TSRMLS_CC);
+	surface_object = (cairo_surface_object *)cairo_surface_object_get(surface_zval );
 	PHP_CAIRO_ERROR(cairo_surface_status(surface_object->surface));
 
 	RETURN_LONG(cairo_image_surface_get_stride(surface_object->surface));
@@ -355,7 +355,7 @@ PHP_FUNCTION(cairo_format_stride_for_width)
 {
 	long format, width;
 
-	if (zend_parse_parameters(ZEND_NUM_ARGS() TSRMLS_CC, "ll", &format, &width) == FAILURE) {
+	if (zend_parse_parameters(ZEND_NUM_ARGS() , "ll", &format, &width) == FAILURE) {
 		return;
 	}
 
@@ -371,7 +371,7 @@ PHP_METHOD(CairoFormat, strideForWidth)
 	long format, width;
 
 	PHP_CAIRO_ERROR_HANDLING(TRUE)
-	if (zend_parse_parameters(ZEND_NUM_ARGS() TSRMLS_CC, "ll", &format, &width) == FAILURE) {
+	if (zend_parse_parameters(ZEND_NUM_ARGS() , "ll", &format, &width) == FAILURE) {
 		PHP_CAIRO_RESTORE_ERRORS(TRUE)
 		return;
 	}
@@ -393,12 +393,12 @@ PHP_FUNCTION(cairo_image_surface_create_from_png)
 	zend_bool owned_stream = 0;
 	php_stream *stream = NULL;
 
-	if (zend_parse_parameters(ZEND_NUM_ARGS() TSRMLS_CC, "z", &stream_zval) == FAILURE) {
+	if (zend_parse_parameters(ZEND_NUM_ARGS() , "z", &stream_zval) == FAILURE) {
 		return;
 	}
 
 	object_init_ex(return_value, cairo_ce_cairoimagesurface);
-	surface_object = (cairo_surface_object *)zend_object_store_get_object(return_value TSRMLS_CC);
+	surface_object = (cairo_surface_object *)zend_object_store_get_object(return_value );
 
 	if(Z_TYPE_P(stream_zval) == IS_STRING) {
 		stream = php_stream_open_wrapper(Z_STRVAL_P(stream_zval), "rw+b", REPORT_ERRORS|ENFORCE_SAFE_MODE, NULL);
@@ -424,7 +424,7 @@ PHP_FUNCTION(cairo_image_surface_create_from_png)
 
 	surface_object->closure = closure;
 	surface_object->surface = cairo_image_surface_create_from_png_stream((cairo_read_func_t) php_cairo_read_func, (void *)closure);
-	php_cairo_trigger_error(cairo_surface_status(surface_object->surface) TSRMLS_CC);
+	php_cairo_trigger_error(cairo_surface_status(surface_object->surface) );
 }
 /* }}} */
 
@@ -439,13 +439,13 @@ PHP_METHOD(CairoImageSurface, createFromPng)
 	php_stream *stream = NULL;
 
 	PHP_CAIRO_ERROR_HANDLING(TRUE)
-	if (zend_parse_parameters(ZEND_NUM_ARGS() TSRMLS_CC, "z", &stream_zval) == FAILURE) {
+	if (zend_parse_parameters(ZEND_NUM_ARGS() , "z", &stream_zval) == FAILURE) {
 		PHP_CAIRO_RESTORE_ERRORS(TRUE)
 		return;
 	}
 
 	object_init_ex(return_value, cairo_ce_cairoimagesurface);
-	surface_object = (cairo_surface_object *)zend_object_store_get_object(return_value TSRMLS_CC);
+	surface_object = (cairo_surface_object *)zend_object_store_get_object(return_value );
 
 	if(Z_TYPE_P(stream_zval) == IS_STRING) {
 		stream = php_stream_open_wrapper(Z_STRVAL_P(stream_zval), "rb", REPORT_ERRORS|ENFORCE_SAFE_MODE, NULL);
@@ -453,7 +453,7 @@ PHP_METHOD(CairoImageSurface, createFromPng)
 	} else if(Z_TYPE_P(stream_zval) == IS_RESOURCE)  {
 		php_stream_from_zval(stream, &stream_zval);	
 	} else {
-		zend_throw_exception(cairo_ce_cairoexception, "CairoImageSurface::createFromPng() expects parameter 1 to be a string or a stream resource", 0 TSRMLS_CC);
+		zend_throw_exception(cairo_ce_cairoexception, "CairoImageSurface::createFromPng() expects parameter 1 to be a string or a stream resource", 0 );
 		return;
 	}
 
@@ -509,7 +509,7 @@ PHP_MINIT_FUNCTION(cairo_image_surface)
 	zend_class_entry ce, format_ce;
 
 	INIT_CLASS_ENTRY(ce, "CairoImageSurface", cairo_image_surface_methods);
-	cairo_ce_cairoimagesurface = zend_register_internal_class_ex(&ce, cairo_ce_cairosurface, "CairoSurface" TSRMLS_CC);
+	cairo_ce_cairoimagesurface = zend_register_internal_class_ex(&ce, cairo_ce_cairosurface, "CairoSurface" );
 	cairo_ce_cairoimagesurface->create_object = cairo_surface_object_new;
 
 #if CAIRO_VERSION >= CAIRO_VERSION_ENCODE(1, 6, 0)
@@ -517,11 +517,11 @@ PHP_MINIT_FUNCTION(cairo_image_surface)
 #else
 	INIT_CLASS_ENTRY(format_ce, "CairoFormat", NULL);
 #endif
-	cairo_ce_cairoformat = zend_register_internal_class(&format_ce TSRMLS_CC);
+	cairo_ce_cairoformat = zend_register_internal_class(&format_ce );
 	cairo_ce_cairoformat->ce_flags |= ZEND_ACC_EXPLICIT_ABSTRACT_CLASS | ZEND_ACC_FINAL_CLASS;
 
 	#define REGISTER_CAIRO_FORMAT_LONG_CONST(const_name, value) \
-	zend_declare_class_constant_long(cairo_ce_cairoformat, const_name, sizeof(const_name)-1, (long)value TSRMLS_CC); \
+	zend_declare_class_constant_long(cairo_ce_cairoformat, const_name, sizeof(const_name)-1, (long)value ); \
 	REGISTER_LONG_CONSTANT(#value,  value,  CONST_CS | CONST_PERSISTENT);
 
 	REGISTER_CAIRO_FORMAT_LONG_CONST("ARGB32", CAIRO_FORMAT_ARGB32);

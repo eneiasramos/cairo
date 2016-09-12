@@ -54,7 +54,7 @@ PHP_FUNCTION(cairo_quartz_font_face_create_for_atsu_font_id)
 	cairo_fontface_object *font_face_object;
 
 	PHP_CAIRO_ERROR_HANDLING
-	if (zend_parse_method_parameters(ZEND_NUM_ARGS() TSRMLS_CC, getThis(), "Os|llll", &font_face_zval, cairo_ce_cairofontface,
+	if (zend_parse_method_parameters(ZEND_NUM_ARGS() , getThis(), "Os|llll", &font_face_zval, cairo_ce_cairofontface,
 			&font_name, &font_name_length, &code, &platform, &script, &language) == FAILURE) {
 		return;
 	}
@@ -67,7 +67,7 @@ PHP_FUNCTION(cairo_quartz_font_face_create_for_atsu_font_id)
 	}
 
 	object_init_ex(return_value, cairo_ce_cairoquartzfont);
-	font_face_object = (cairo_fontface_object *)zend_object_store_get_object(return_value TSRMLS_CC);
+	font_face_object = (cairo_fontface_object *)zend_object_store_get_object(return_value );
 
 	font_face_object->font_face = cairo_quartz_font_face_create_for_atsu_font_id(fontID);
 	PHP_CAIRO_ERROR(cairo_font_face_status(font_face_object->font_face));
@@ -88,12 +88,12 @@ PHP_FUNCTION(cairo_quartz_font_face_create_for_cgfont)
 	cairo_fontface_object *font_face_object;
 
 	PHP_CAIRO_ERROR_HANDLING
-	if (zend_parse_method_parameters(ZEND_NUM_ARGS() TSRMLS_CC, getThis(), "Os", &font_face_zval, cairo_ce_cairofontface, &c_font_name) == FAILURE) {
+	if (zend_parse_method_parameters(ZEND_NUM_ARGS() , getThis(), "Os", &font_face_zval, cairo_ce_cairofontface, &c_font_name) == FAILURE) {
 		return;
 	}
 
 	object_init_ex(return_value, cairo_ce_cairoquartzfont);
-	font_face_object = (cairo_fontface_object *)zend_object_store_get_object(return_value TSRMLS_CC);
+	font_face_object = (cairo_fontface_object *)zend_object_store_get_object(return_value );
 
 	/* Create our CFStringRef for the call */
 	font_name = CFStringCreateWithCString(NULL, c_font_name, kCFStringEncodingMacRoman);
@@ -124,38 +124,38 @@ const zend_function_entry cairo_quartz_font_methods[] = {
 
 #ifdef CAIRO_HAS_QUARTZ_FONT
 	INIT_CLASS_ENTRY(ce, "CairoQuartzFontFace", cairo_quartz_font_methods);
-	cairo_ce_cairoquartzfont = zend_register_internal_class_ex(&ce, cairo_ce_cairofontface, "CairoFontFace" TSRMLS_CC);
+	cairo_ce_cairoquartzfont = zend_register_internal_class_ex(&ce, cairo_ce_cairofontface, "CairoFontFace" );
 	cairo_ce_cairoquartzfont->create_object = cairo_fontface_object_new;
 
 	INIT_CLASS_ENTRY(ce, "CairoQuartzAtsuFontNameCode", NULL);
-	cairo_ce_cairoquartzatsufontnamecode = zend_register_internal_class(&ce TSRMLS_CC);
+	cairo_ce_cairoquartzatsufontnamecode = zend_register_internal_class(&ce );
 	cairo_ce_cairoquartzatsufontnamecode->ce_flags |= ZEND_ACC_EXPLICIT_ABSTRACT_CLASS | ZEND_ACC_FINAL_CLASS;
 
-	zend_declare_class_constant_long(cairo_ce_cairoquartzatsufontnamecode, "CopyrightName", sizeof("CopyrightName")-1, kFontCopyrightName TSRMLS_CC);
-	zend_declare_class_constant_long(cairo_ce_cairoquartzatsufontnamecode, "FamilyName", sizeof("FamilyName")-1, kFontFamilyName TSRMLS_CC);
-	zend_declare_class_constant_long(cairo_ce_cairoquartzatsufontnamecode, "StyleName", sizeof("StyleName")-1, kFontStyleName TSRMLS_CC);
-	zend_declare_class_constant_long(cairo_ce_cairoquartzatsufontnamecode, "UniqueName", sizeof("UniqueName")-1, kFontUniqueName TSRMLS_CC);
-	zend_declare_class_constant_long(cairo_ce_cairoquartzatsufontnamecode, "FullName", sizeof("FullName")-1, kFontFullName TSRMLS_CC);
-	zend_declare_class_constant_long(cairo_ce_cairoquartzatsufontnamecode, "VersionName", sizeof("VersionName")-1, kFontVersionName TSRMLS_CC);
-	zend_declare_class_constant_long(cairo_ce_cairoquartzatsufontnamecode, "PostscriptName", sizeof("PostscriptName")-1, kFontPostscriptName TSRMLS_CC);
-	zend_declare_class_constant_long(cairo_ce_cairoquartzatsufontnamecode, "TrademarkName", sizeof("TrademarkName")-1, kFontTrademarkName TSRMLS_CC);
-	zend_declare_class_constant_long(cairo_ce_cairoquartzatsufontnamecode, "ManufacturerName", sizeof("ManufacturerName")-1, kFontManufacturerName TSRMLS_CC);
-	zend_declare_class_constant_long(cairo_ce_cairoquartzatsufontnamecode, "DesignerName", sizeof("DesignerName")-1, kFontDesignerName TSRMLS_CC);
-	zend_declare_class_constant_long(cairo_ce_cairoquartzatsufontnamecode, "DescriptionName", sizeof("DescriptionName")-1, kFontDescriptionName TSRMLS_CC);
-	zend_declare_class_constant_long(cairo_ce_cairoquartzatsufontnamecode, "VendorURLName", sizeof("VendorURLName")-1, kFontVendorURLName TSRMLS_CC);
-	zend_declare_class_constant_long(cairo_ce_cairoquartzatsufontnamecode, "DesignerURLName", sizeof("DesignerURLName")-1, kFontDesignerURLName TSRMLS_CC);
-	zend_declare_class_constant_long(cairo_ce_cairoquartzatsufontnamecode, "LicenseDescriptionName", sizeof("LicenseDescriptionName")-1, kFontLicenseDescriptionName TSRMLS_CC);
-	zend_declare_class_constant_long(cairo_ce_cairoquartzatsufontnamecode, "LicenseInfoURLName", sizeof("LicenseInfoURLName")-1, kFontLicenseInfoURLName TSRMLS_CC);
+	zend_declare_class_constant_long(cairo_ce_cairoquartzatsufontnamecode, "CopyrightName", sizeof("CopyrightName")-1, kFontCopyrightName );
+	zend_declare_class_constant_long(cairo_ce_cairoquartzatsufontnamecode, "FamilyName", sizeof("FamilyName")-1, kFontFamilyName );
+	zend_declare_class_constant_long(cairo_ce_cairoquartzatsufontnamecode, "StyleName", sizeof("StyleName")-1, kFontStyleName );
+	zend_declare_class_constant_long(cairo_ce_cairoquartzatsufontnamecode, "UniqueName", sizeof("UniqueName")-1, kFontUniqueName );
+	zend_declare_class_constant_long(cairo_ce_cairoquartzatsufontnamecode, "FullName", sizeof("FullName")-1, kFontFullName );
+	zend_declare_class_constant_long(cairo_ce_cairoquartzatsufontnamecode, "VersionName", sizeof("VersionName")-1, kFontVersionName );
+	zend_declare_class_constant_long(cairo_ce_cairoquartzatsufontnamecode, "PostscriptName", sizeof("PostscriptName")-1, kFontPostscriptName );
+	zend_declare_class_constant_long(cairo_ce_cairoquartzatsufontnamecode, "TrademarkName", sizeof("TrademarkName")-1, kFontTrademarkName );
+	zend_declare_class_constant_long(cairo_ce_cairoquartzatsufontnamecode, "ManufacturerName", sizeof("ManufacturerName")-1, kFontManufacturerName );
+	zend_declare_class_constant_long(cairo_ce_cairoquartzatsufontnamecode, "DesignerName", sizeof("DesignerName")-1, kFontDesignerName );
+	zend_declare_class_constant_long(cairo_ce_cairoquartzatsufontnamecode, "DescriptionName", sizeof("DescriptionName")-1, kFontDescriptionName );
+	zend_declare_class_constant_long(cairo_ce_cairoquartzatsufontnamecode, "VendorURLName", sizeof("VendorURLName")-1, kFontVendorURLName );
+	zend_declare_class_constant_long(cairo_ce_cairoquartzatsufontnamecode, "DesignerURLName", sizeof("DesignerURLName")-1, kFontDesignerURLName );
+	zend_declare_class_constant_long(cairo_ce_cairoquartzatsufontnamecode, "LicenseDescriptionName", sizeof("LicenseDescriptionName")-1, kFontLicenseDescriptionName );
+	zend_declare_class_constant_long(cairo_ce_cairoquartzatsufontnamecode, "LicenseInfoURLName", sizeof("LicenseInfoURLName")-1, kFontLicenseInfoURLName );
 
 	INIT_CLASS_ENTRY(ce, "CairoQuartzAtsuFontNamePlatform", NULL);
-	cairo_ce_cairoquartzatsufontnameplatform = zend_register_internal_class(&ce TSRMLS_CC);
+	cairo_ce_cairoquartzatsufontnameplatform = zend_register_internal_class(&ce );
 	cairo_ce_cairoquartzatsufontnameplatform->ce_flags |= ZEND_ACC_EXPLICIT_ABSTRACT_CLASS | ZEND_ACC_FINAL_CLASS;
 
-	zend_declare_class_constant_long(cairo_ce_cairoquartzatsufontnameplatform, "UnicodePlatform", sizeof("UnicodePlatform")-1, kFontUnicodePlatform TSRMLS_CC);
-	zend_declare_class_constant_long(cairo_ce_cairoquartzatsufontnameplatform, "MacintoshPlatform", sizeof("MacintoshPlatform")-1, kFontMacintoshPlatform TSRMLS_CC);
-	zend_declare_class_constant_long(cairo_ce_cairoquartzatsufontnameplatform, "ReservedPlatform", sizeof("ReservedPlatform")-1, kFontReservedPlatform TSRMLS_CC);
-	zend_declare_class_constant_long(cairo_ce_cairoquartzatsufontnameplatform, "MicrosoftPlatform", sizeof("MicrosoftPlatform")-1, kFontMicrosoftPlatform TSRMLS_CC);
-	zend_declare_class_constant_long(cairo_ce_cairoquartzatsufontnameplatform, "CustomPlatform", sizeof("CustomPlatform")-1, kFontCustomPlatform TSRMLS_CC);
+	zend_declare_class_constant_long(cairo_ce_cairoquartzatsufontnameplatform, "UnicodePlatform", sizeof("UnicodePlatform")-1, kFontUnicodePlatform );
+	zend_declare_class_constant_long(cairo_ce_cairoquartzatsufontnameplatform, "MacintoshPlatform", sizeof("MacintoshPlatform")-1, kFontMacintoshPlatform );
+	zend_declare_class_constant_long(cairo_ce_cairoquartzatsufontnameplatform, "ReservedPlatform", sizeof("ReservedPlatform")-1, kFontReservedPlatform );
+	zend_declare_class_constant_long(cairo_ce_cairoquartzatsufontnameplatform, "MicrosoftPlatform", sizeof("MicrosoftPlatform")-1, kFontMicrosoftPlatform );
+	zend_declare_class_constant_long(cairo_ce_cairoquartzatsufontnameplatform, "CustomPlatform", sizeof("CustomPlatform")-1, kFontCustomPlatform );
 
 	/*	TODO: register these too - ugh
 enum {

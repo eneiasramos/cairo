@@ -58,13 +58,13 @@ PHP_METHOD(CairoSvgSurface, __construct)
 	cairo_surface_object *surface_object;
 
 	PHP_CAIRO_ERROR_HANDLING(TRUE)
-	if (zend_parse_parameters(ZEND_NUM_ARGS() TSRMLS_CC, "zdd", &stream_zval, &width, &height) == FAILURE) {
+	if (zend_parse_parameters(ZEND_NUM_ARGS() , "zdd", &stream_zval, &width, &height) == FAILURE) {
 		PHP_CAIRO_RESTORE_ERRORS(TRUE)
 		return;
 	}
 	PHP_CAIRO_RESTORE_ERRORS(TRUE)
 
-	surface_object = (cairo_surface_object *)zend_object_store_get_object(getThis() TSRMLS_CC);
+	surface_object = (cairo_surface_object *)zend_object_store_get_object(getThis() );
 
 	/* special case - a NULL file is like an "in memory" svg */
 	if(Z_TYPE_P(stream_zval) == IS_NULL) {
@@ -77,7 +77,7 @@ PHP_METHOD(CairoSvgSurface, __construct)
 		} else if(Z_TYPE_P(stream_zval) == IS_RESOURCE)  {
 			php_stream_from_zval(stream, &stream_zval);	
 		} else {
-			zend_throw_exception(cairo_ce_cairoexception, "CairoSvgSurface::__construct() expects parameter 1 to be null, a string, or a stream resource", 0 TSRMLS_CC);
+			zend_throw_exception(cairo_ce_cairoexception, "CairoSvgSurface::__construct() expects parameter 1 to be null, a string, or a stream resource", 0 );
 			return;
 		}
 
@@ -92,7 +92,7 @@ PHP_METHOD(CairoSvgSurface, __construct)
 		surface_object->surface = cairo_svg_surface_create_for_stream(php_cairo_write_func, (void *)closure, width, height);
 	}
 
-	php_cairo_throw_exception(cairo_surface_status(surface_object->surface) TSRMLS_CC);
+	php_cairo_throw_exception(cairo_surface_status(surface_object->surface) );
 }
 /* }}} */
 
@@ -107,12 +107,12 @@ PHP_FUNCTION(cairo_svg_surface_create)
 	zend_bool owned_stream = 0;
 	cairo_surface_object *surface_object;
 
-	if (zend_parse_parameters(ZEND_NUM_ARGS() TSRMLS_CC, "zdd", &stream_zval, &width, &height) == FAILURE) {
+	if (zend_parse_parameters(ZEND_NUM_ARGS() , "zdd", &stream_zval, &width, &height) == FAILURE) {
 		return;
 	}
 
 	object_init_ex(return_value, cairo_ce_cairosvgsurface);
-	surface_object = (cairo_surface_object *)zend_object_store_get_object(return_value TSRMLS_CC);
+	surface_object = (cairo_surface_object *)zend_object_store_get_object(return_value );
 
 	/* special case - a NULL file is like an "in memory" svg */
 	if(Z_TYPE_P(stream_zval) == IS_NULL) {
@@ -140,7 +140,7 @@ PHP_FUNCTION(cairo_svg_surface_create)
 		surface_object->surface = cairo_svg_surface_create_for_stream(php_cairo_write_func, (void *)closure, width, height);
 	}
 
-	php_cairo_trigger_error(cairo_surface_status(surface_object->surface) TSRMLS_CC);
+	php_cairo_trigger_error(cairo_surface_status(surface_object->surface) );
 }
 /* }}} */
 
@@ -154,13 +154,13 @@ PHP_FUNCTION(cairo_svg_surface_restrict_to_version)
 	cairo_surface_object *surface_object;
 
 	PHP_CAIRO_ERROR_HANDLING(FALSE)
-	if (zend_parse_method_parameters(ZEND_NUM_ARGS() TSRMLS_CC, getThis(), "Ol", &surface_zval, cairo_ce_cairosvgsurface, &version) == FAILURE) {
+	if (zend_parse_method_parameters(ZEND_NUM_ARGS() , getThis(), "Ol", &surface_zval, cairo_ce_cairosvgsurface, &version) == FAILURE) {
 		PHP_CAIRO_RESTORE_ERRORS(FALSE)
 		return;
 	}
 	PHP_CAIRO_RESTORE_ERRORS(FALSE)
 
-	surface_object = (cairo_surface_object *)cairo_surface_object_get(surface_zval TSRMLS_CC);
+	surface_object = (cairo_surface_object *)cairo_surface_object_get(surface_zval );
 
 	cairo_svg_surface_restrict_to_version(surface_object->surface, version);
 	PHP_CAIRO_ERROR(cairo_surface_status(surface_object->surface));
@@ -174,12 +174,12 @@ PHP_FUNCTION(cairo_svg_version_to_string)
 	long version;
 	const char *version_str;
 
-	if (zend_parse_parameters(ZEND_NUM_ARGS() TSRMLS_CC, "l", &version) == FAILURE) {
+	if (zend_parse_parameters(ZEND_NUM_ARGS() , "l", &version) == FAILURE) {
 		return;
 	}
 	
 	if (version_str = cairo_svg_version_to_string(version)) {
-		RETURN_STRING(version_str, 1);
+		RETURN_STRING(version_str);
 	}
 	RETURN_FALSE;
 }
@@ -192,13 +192,13 @@ PHP_METHOD(CairoSvgSurface, versionToString)
 	long version;
 
 	PHP_CAIRO_ERROR_HANDLING(TRUE)
-	if (zend_parse_parameters(ZEND_NUM_ARGS() TSRMLS_CC, "l", &version) == FAILURE) {
+	if (zend_parse_parameters(ZEND_NUM_ARGS() , "l", &version) == FAILURE) {
 		PHP_CAIRO_RESTORE_ERRORS(TRUE)
 		return;
 	}
 	PHP_CAIRO_RESTORE_ERRORS(TRUE)
 
-	RETURN_STRING(cairo_svg_version_to_string(version), 1);
+	RETURN_STRING(cairo_svg_version_to_string(version));
 }
 /* }}} */
 
@@ -209,7 +209,7 @@ PHP_FUNCTION(cairo_svg_get_versions)
 	const cairo_svg_version_t *versions = 0;
 	int version_count = 0, i = 0;
 
-	if (zend_parse_method_parameters(ZEND_NUM_ARGS() TSRMLS_CC, getThis(), "") == FAILURE) {
+	if (zend_parse_method_parameters(ZEND_NUM_ARGS() , getThis(), "") == FAILURE) {
 		return;
 	}
 
@@ -230,7 +230,7 @@ PHP_METHOD(CairoSvgSurface, getVersions)
 	int version_count = 0, i = 0;
 
 	PHP_CAIRO_ERROR_HANDLING(TRUE)
-	if (zend_parse_method_parameters(ZEND_NUM_ARGS() TSRMLS_CC, getThis(), "") == FAILURE) {
+	if (zend_parse_method_parameters(ZEND_NUM_ARGS() , getThis(), "") == FAILURE) {
 		PHP_CAIRO_RESTORE_ERRORS(TRUE)
 		return;
 	}
@@ -261,15 +261,15 @@ PHP_MINIT_FUNCTION(cairo_svg_surface)
 	zend_class_entry ce, version_ce;
 
 	INIT_CLASS_ENTRY(ce, "CairoSvgSurface", cairo_svg_surface_methods);
-	cairo_ce_cairosvgsurface = zend_register_internal_class_ex(&ce, cairo_ce_cairosurface, "CairoSurface" TSRMLS_CC);
+	cairo_ce_cairosvgsurface = zend_register_internal_class_ex(&ce, cairo_ce_cairosurface, "CairoSurface" );
 	cairo_ce_cairosvgsurface->create_object = cairo_surface_object_new;
 
 	INIT_CLASS_ENTRY(version_ce, "CairoSvgVersion", NULL);
-	cairo_ce_cairosvgversion = zend_register_internal_class(&version_ce TSRMLS_CC);
+	cairo_ce_cairosvgversion = zend_register_internal_class(&version_ce );
 	cairo_ce_cairosvgversion->ce_flags |= ZEND_ACC_EXPLICIT_ABSTRACT_CLASS | ZEND_ACC_FINAL_CLASS;
 
 	#define REGISTER_CAIRO_VERSION_LONG_CONST(const_name, value) \
-	zend_declare_class_constant_long(cairo_ce_cairosvgversion, const_name, sizeof(const_name)-1, (long)value TSRMLS_CC); \
+	zend_declare_class_constant_long(cairo_ce_cairosvgversion, const_name, sizeof(const_name)-1, (long)value ); \
 	REGISTER_LONG_CONSTANT(#value,  value,  CONST_CS | CONST_PERSISTENT);
 
 	REGISTER_CAIRO_VERSION_LONG_CONST("VERSION_1_1", CAIRO_SVG_VERSION_1_1);

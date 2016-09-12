@@ -32,7 +32,7 @@ zend_class_entry *cairo_ce_cairofonttype;
    CairoFontFace CANNOT be extended in userspace, this will throw an exception on use */
 PHP_METHOD(CairoFontFace, __construct)
 {
-	zend_throw_exception(cairo_ce_cairoexception, "CairoFontFace cannot be constructed", 0 TSRMLS_CC);
+	zend_throw_exception(cairo_ce_cairoexception, "CairoFontFace cannot be constructed", 0 );
 }
 /* }}} */
 
@@ -45,13 +45,13 @@ PHP_FUNCTION(cairo_font_face_status)
 	cairo_font_face_object *font_face_object;
 
 	PHP_CAIRO_ERROR_HANDLING(FALSE)
-	if (zend_parse_method_parameters(ZEND_NUM_ARGS() TSRMLS_CC, getThis(), "O", &font_face_zval, cairo_ce_cairofontface) == FAILURE) {
+	if (zend_parse_method_parameters(ZEND_NUM_ARGS() , getThis(), "O", &font_face_zval, cairo_ce_cairofontface) == FAILURE) {
 		PHP_CAIRO_RESTORE_ERRORS(FALSE)
 		return;
 	}
 	PHP_CAIRO_RESTORE_ERRORS(FALSE)
 
-	font_face_object = (cairo_font_face_object *) cairo_font_face_object_get(font_face_zval TSRMLS_CC);
+	font_face_object = (cairo_font_face_object *) cairo_font_face_object_get(font_face_zval );
 	RETURN_LONG(cairo_font_face_status(font_face_object->font_face));
 }
 /* }}} */
@@ -65,13 +65,13 @@ PHP_FUNCTION(cairo_font_face_get_type)
 	cairo_font_face_object *font_face_object;
 
 	PHP_CAIRO_ERROR_HANDLING(FALSE)
-	if (zend_parse_method_parameters(ZEND_NUM_ARGS() TSRMLS_CC, getThis(), "O", &font_face_zval, cairo_ce_cairofontface) == FAILURE) {
+	if (zend_parse_method_parameters(ZEND_NUM_ARGS() , getThis(), "O", &font_face_zval, cairo_ce_cairofontface) == FAILURE) {
 		PHP_CAIRO_RESTORE_ERRORS(FALSE)
 		return;
 	}
 	PHP_CAIRO_RESTORE_ERRORS(FALSE)
 
-	font_face_object = (cairo_font_face_object *) cairo_font_face_object_get(font_face_zval TSRMLS_CC);
+	font_face_object = (cairo_font_face_object *) cairo_font_face_object_get(font_face_zval );
 	RETURN_LONG(cairo_font_face_get_type(font_face_object->font_face));
 }
 /* }}} */
@@ -128,7 +128,7 @@ zend_object_value cairo_font_face_object_new(zend_class_entry *ce TSRMLS_DC)
 #else
 	object_properties_init(&font_face->std, ce);
 #endif
-	retval.handle = zend_objects_store_put(font_face, NULL, (zend_objects_free_object_storage_t)cairo_font_face_object_destroy, NULL TSRMLS_CC);
+	retval.handle = zend_objects_store_put(font_face, NULL, (zend_objects_free_object_storage_t)cairo_font_face_object_destroy, NULL );
 	retval.handlers = zend_get_std_object_handlers();
 	return retval;
 }
@@ -148,16 +148,16 @@ PHP_MINIT_FUNCTION(cairo_font_face)
 	zend_class_entry fonttype_ce;
 
 	INIT_CLASS_ENTRY(fontface_ce, "CairoFontFace", cairo_font_face_methods);
-	cairo_ce_cairofontface = zend_register_internal_class(&fontface_ce TSRMLS_CC);
+	cairo_ce_cairofontface = zend_register_internal_class(&fontface_ce );
 	cairo_ce_cairofontface->create_object = cairo_font_face_object_new;
 	cairo_ce_cairofontface->ce_flags |= ZEND_ACC_EXPLICIT_ABSTRACT_CLASS;
 
 	INIT_CLASS_ENTRY(fonttype_ce, "CairoFontType", NULL);
-	cairo_ce_cairofonttype = zend_register_internal_class(&fonttype_ce TSRMLS_CC);
+	cairo_ce_cairofonttype = zend_register_internal_class(&fonttype_ce );
 	cairo_ce_cairofonttype->ce_flags |= ZEND_ACC_EXPLICIT_ABSTRACT_CLASS | ZEND_ACC_FINAL_CLASS;
 
 	#define REGISTER_CAIRO_FONTTYPE_LONG_CONST(const_name, value) \
-	zend_declare_class_constant_long(cairo_ce_cairofonttype, const_name, sizeof(const_name)-1, (long)value TSRMLS_CC); \
+	zend_declare_class_constant_long(cairo_ce_cairofonttype, const_name, sizeof(const_name)-1, (long)value ); \
 	REGISTER_LONG_CONSTANT(#value,  value,  CONST_CS | CONST_PERSISTENT);
 
 	REGISTER_CAIRO_FONTTYPE_LONG_CONST("TOY", CAIRO_FONT_TYPE_TOY);

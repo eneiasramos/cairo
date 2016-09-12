@@ -58,7 +58,7 @@ static zend_object_value cairo_path_object_new(zend_class_entry *ce TSRMLS_DC)
 #else
 	object_properties_init(&path->std, ce);
 #endif
-	retval.handle = zend_objects_store_put(path, NULL, (zend_objects_free_object_storage_t)cairo_path_object_destroy, NULL TSRMLS_CC);
+	retval.handle = zend_objects_store_put(path, NULL, (zend_objects_free_object_storage_t)cairo_path_object_destroy, NULL );
 	retval.handlers = &cairo_std_object_handlers;
 	return retval;
 }
@@ -69,7 +69,7 @@ PHP_MINIT_FUNCTION(cairo_path)
 	zend_class_entry ce;
 
 	INIT_CLASS_ENTRY(ce, "CairoPath", NULL);
-	cairo_ce_cairopath = zend_register_internal_class(&ce TSRMLS_CC);
+	cairo_ce_cairopath = zend_register_internal_class(&ce );
 	cairo_ce_cairopath->create_object = cairo_path_object_new;
 
 	return SUCCESS;

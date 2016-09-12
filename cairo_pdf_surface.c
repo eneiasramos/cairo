@@ -54,13 +54,13 @@ PHP_METHOD(CairoPdfSurface, __construct)
 	cairo_surface_object *surface_object;
 
 	PHP_CAIRO_ERROR_HANDLING(TRUE)
-	if (zend_parse_parameters(ZEND_NUM_ARGS() TSRMLS_CC, "zdd", &stream_zval, &width, &height) == FAILURE) {
+	if (zend_parse_parameters(ZEND_NUM_ARGS() , "zdd", &stream_zval, &width, &height) == FAILURE) {
 		PHP_CAIRO_RESTORE_ERRORS(TRUE)
 		return;
 	}
 	PHP_CAIRO_RESTORE_ERRORS(TRUE)
 
-	surface_object = (cairo_surface_object *)zend_object_store_get_object(getThis() TSRMLS_CC);
+	surface_object = (cairo_surface_object *)zend_object_store_get_object(getThis() );
 
 	/* special case - a NULL file is like an "in memory" PDF */
 	if(Z_TYPE_P(stream_zval) == IS_NULL) {
@@ -73,7 +73,7 @@ PHP_METHOD(CairoPdfSurface, __construct)
 		} else if(Z_TYPE_P(stream_zval) == IS_RESOURCE)  {
 			php_stream_from_zval(stream, &stream_zval);	
 		} else {
-			zend_throw_exception(cairo_ce_cairoexception, "CairoPdfSurface::__construct() expects parameter 1 to be null, a string, or a stream resource", 0 TSRMLS_CC);
+			zend_throw_exception(cairo_ce_cairoexception, "CairoPdfSurface::__construct() expects parameter 1 to be null, a string, or a stream resource", 0 );
 			return;
 		}
 
@@ -89,7 +89,7 @@ PHP_METHOD(CairoPdfSurface, __construct)
 		surface_object->surface = cairo_pdf_surface_create_for_stream(php_cairo_write_func, (void *)closure, width, height);
 	}
 
-	php_cairo_throw_exception(cairo_surface_status(surface_object->surface) TSRMLS_CC);
+	php_cairo_throw_exception(cairo_surface_status(surface_object->surface) );
 }
 /* }}} */
 
@@ -104,12 +104,12 @@ PHP_FUNCTION(cairo_pdf_surface_create)
 	double width, height;
 	cairo_surface_object *surface_object;
 
-	if (zend_parse_parameters(ZEND_NUM_ARGS() TSRMLS_CC, "zdd", &stream_zval, &width, &height) == FAILURE) {
+	if (zend_parse_parameters(ZEND_NUM_ARGS() , "zdd", &stream_zval, &width, &height) == FAILURE) {
 		return;
 	}
 
 	object_init_ex(return_value, cairo_ce_cairopdfsurface);
-	surface_object = (cairo_surface_object *)zend_object_store_get_object(return_value TSRMLS_CC);
+	surface_object = (cairo_surface_object *)zend_object_store_get_object(return_value );
 
 	/* special case - a NULL file is like an "in memory" PDF */
 	if(Z_TYPE_P(stream_zval) == IS_NULL) {
@@ -138,7 +138,7 @@ PHP_FUNCTION(cairo_pdf_surface_create)
 		surface_object->surface = cairo_pdf_surface_create_for_stream(php_cairo_write_func, (void *)closure, width, height);
 	}
 
-	php_cairo_trigger_error(cairo_surface_status(surface_object->surface) TSRMLS_CC);
+	php_cairo_trigger_error(cairo_surface_status(surface_object->surface) );
 }
 /* }}} */
 
@@ -153,13 +153,13 @@ PHP_FUNCTION(cairo_pdf_surface_set_size)
 	cairo_surface_object *surface_object;
 
 	PHP_CAIRO_ERROR_HANDLING(FALSE)
-	if (zend_parse_method_parameters(ZEND_NUM_ARGS() TSRMLS_CC, getThis(), "Odd", &surface_zval, cairo_ce_cairopdfsurface, &width, &height) == FAILURE) {
+	if (zend_parse_method_parameters(ZEND_NUM_ARGS() , getThis(), "Odd", &surface_zval, cairo_ce_cairopdfsurface, &width, &height) == FAILURE) {
 		PHP_CAIRO_RESTORE_ERRORS(FALSE)
 		return;
 	}
 	PHP_CAIRO_RESTORE_ERRORS(FALSE)
 
-	surface_object = (cairo_surface_object *)cairo_surface_object_get(surface_zval TSRMLS_CC);
+	surface_object = (cairo_surface_object *)cairo_surface_object_get(surface_zval );
 
 	cairo_pdf_surface_set_size(surface_object->surface, width, height);
 	PHP_CAIRO_ERROR(cairo_surface_status(surface_object->surface));
@@ -180,7 +180,7 @@ PHP_MINIT_FUNCTION(cairo_pdf_surface)
 	zend_class_entry ce;
 
 	INIT_CLASS_ENTRY(ce, "CairoPdfSurface", cairo_pdf_surface_methods);
-	cairo_ce_cairopdfsurface = zend_register_internal_class_ex(&ce, cairo_ce_cairosurface, "CairoSurface" TSRMLS_CC);
+	cairo_ce_cairopdfsurface = zend_register_internal_class_ex(&ce, cairo_ce_cairosurface, "CairoSurface" );
 	cairo_ce_cairopdfsurface->create_object = cairo_surface_object_new;
 
 	return SUCCESS;
